@@ -1,20 +1,20 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+import { electronApp, is, optimizer } from '@electron-toolkit/utils'
+import { app, BrowserWindow, ipcMain, shell } from 'electron'
 import { join } from 'path'
-import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 
 function createWindow(): void {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 900,
-    height: 670,
+    width: 1280,
+    height: 720,
     show: false,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: true,
-      contextIsolation: true,
+      contextIsolation: true
     }
   })
 
@@ -52,6 +52,49 @@ app.whenReady().then(() => {
 
   // IPC test
   ipcMain.on('ping', () => console.log('pong'))
+
+  ipcMain.on('open-control-panel', () => {
+    // Obtener las dimensiones de la pantalla principal
+    const { width, height } = require('electron').screen.getPrimaryDisplay().workAreaSize
+
+    const controlPanelWindow = new BrowserWindow({
+      width: 270,
+      height: 400,
+      frame: false,
+      autoHideMenuBar: true,
+      transparent: true,
+      resizable: false,
+      // Posicionar en el centro derecho de la pantalla
+      x: width - 280, // 10px de margen desde el borde derecho
+      y: Math.round(height / 2) - 200, // Centrado verticalmente
+      webPreferences: {
+        preload: join(__dirname, '../preload/index.js'),
+        sandbox: true,
+        contextIsolation: true
+      }
+    })
+
+    // Registrar eventos para minimizar y cerrar la ventana
+    // Manejador para minimizar la ventana del panel de control
+    ipcMain.on('minimize-window', () => {
+      // No hacemos nada aquí, ya que ahora manejamos la minimización en el componente React
+      // controlPanelWindow.minimize()
+    })
+
+    ipcMain.on('close-window', () => {
+      if (controlPanelWindow && !controlPanelWindow.isDestroyed()) {
+        controlPanelWindow.close()
+      }
+    })
+
+    if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
+      controlPanelWindow.loadURL(`${process.env['ELECTRON_RENDERER_URL']}/control-panel`)
+    } else {
+      controlPanelWindow.loadFile(join(__dirname, '../renderer/index.html'), {
+        hash: 'control-panel'
+      })
+    }
+  })
 
   createWindow()
 

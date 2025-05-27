@@ -1,5 +1,5 @@
 import type { LucideIcon } from 'lucide-react'
-import { HelpCircle, Home, Info, Layout, Play, Settings } from 'lucide-react'
+import { ArrowLeft, ArrowRight, HelpCircle, Home, Play, Settings } from 'lucide-react'
 
 export interface RouteConfig {
   icon: LucideIcon
@@ -9,33 +9,38 @@ export interface RouteConfig {
 
 export const routes: RouteConfig[] = [
   {
+    icon: ArrowLeft,
+    label: 'Anterior',
+    path: 'prev'
+  },
+  {
     icon: Home,
-    label: 'Home',
-    path: '/'
+    label: 'Inicio',
+    path: '/home'
   },
   {
     icon: Play,
-    label: 'Detection',
-    path: '/detection'
-  },
-  {
-    icon: Layout,
-    label: 'Control Panel',
-    path: '/control'
+    label: 'Prueba de Gestos',
+    path: '/detection-test'
   },
   {
     icon: Settings,
-    label: 'Settings',
+    label: 'Configuración de Detección',
+    path: '/detection-settings'
+  },
+  {
+    icon: Settings,
+    label: 'Configuración',
     path: '/settings'
   },
   {
-    icon: Info,
-    label: 'About',
-    path: '/about'
+    icon: HelpCircle,
+    label: 'Ayuda',
+    path: '/help'
   },
   {
-    icon: HelpCircle,
-    label: 'Help',
-    path: '/help'
+    icon: ArrowRight,
+    label: 'Siguiente',
+    path: 'next'
   }
 ]
