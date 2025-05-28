@@ -19,7 +19,7 @@ export const Dropdown = ({ trigger, children, isOpen, onToggle }: DropdownProps)
     <div className="relative">
       <div onClick={onToggle}>{trigger}</div>
       {isOpen && (
-        <div className="absolute right-0 top-full mt-2 w-48 rounded-lg border border-zinc-700 bg-zinc-800 shadow-lg z-10">
+        <div className="absolute right-0 bottom-full mb-2 w-48 rounded-lg border border-zinc-700 bg-zinc-800 shadow-lg z-10">
           {children}
         </div>
       )}

@@ -1,14 +1,15 @@
 import { electronApp, is, optimizer } from '@electron-toolkit/utils'
 import { app, BrowserWindow, ipcMain, shell } from 'electron'
 import { join } from 'path'
-import icon from '../../resources/icon.png?asset'
+import icon from '../../resources/Icono.ico?asset'
 
 function createWindow(): void {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 1280,
-    height: 720,
+    width: 1920,
+    height: 1080,
     show: false,
+    icon: icon,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
@@ -53,6 +54,15 @@ app.whenReady().then(() => {
   // IPC test
   ipcMain.on('ping', () => console.log('pong'))
 
+  // Manejador para actualizar el tamaño de la ventana
+  ipcMain.on('update-window-size', (_, dimensions: { width: number; height: number }) => {
+    const mainWindow = BrowserWindow.getFocusedWindow()
+    if (mainWindow) {
+      mainWindow.setSize(dimensions.width, dimensions.height)
+      mainWindow.center() // Centrar la ventana después de cambiar el tamaño
+    }
+  })
+
   ipcMain.on('open-control-panel', () => {
     // Obtener las dimensiones de la pantalla principal
     const { width, height } = require('electron').screen.getPrimaryDisplay().workAreaSize
@@ -61,6 +71,7 @@ app.whenReady().then(() => {
       width: 270,
       height: 400,
       frame: false,
+      icon: icon,
       autoHideMenuBar: true,
       transparent: true,
       resizable: false,

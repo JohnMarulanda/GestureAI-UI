@@ -1,23 +1,93 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { Camera, Check, Info, Maximize, RefreshCw, Settings, Sliders, X } from 'lucide-react'
+import {
+  Camera,
+  Check,
+  FlipHorizontal,
+  Maximize,
+  RefreshCw,
+  Settings,
+  Sliders,
+  X
+} from 'lucide-react'
 import React, { useState } from 'react'
 
 interface CameraSettingsProps {
   className?: string
+  onSettingsChange?: (settings: CameraSettings) => void
+  onFlipChange?: (flipped: boolean) => void
+  onFullscreenChange?: (fullscreen: boolean) => void
+  onRestartCamera?: () => void
 }
 
-const CameraSettings: React.FC<CameraSettingsProps> = ({ className = '' }) => {
+export interface CameraSettings {
+  flipped: boolean
+  fullscreen: boolean
+  brightness: number
+  contrast: number
+  resolution: string
+}
+
+const CameraSettings: React.FC<CameraSettingsProps> = ({
+  className = '',
+  onSettingsChange,
+  onFlipChange,
+  onFullscreenChange,
+  onRestartCamera
+}) => {
   const [isOpen, setIsOpen] = useState(false)
   const [activeTab, setActiveTab] = useState<'general' | 'advanced'>('general')
   const [flipped, setFlipped] = useState(false)
   const [fullscreen, setFullscreen] = useState(false)
-  const [brightness, setBrightness] = useState(50)
-  const [contrast, setContrast] = useState(50)
+  const [brightness, setBrightness] = useState(100)
+  const [contrast, setContrast] = useState(100)
   const [resolution, setResolution] = useState('720p')
 
   const toggleSettings = () => setIsOpen(!isOpen)
-  const toggleFlip = () => setFlipped(!flipped)
-  const toggleFullscreen = () => setFullscreen(!fullscreen)
+
+  const toggleFlip = () => {
+    const newFlipped = !flipped
+    setFlipped(newFlipped)
+    onFlipChange?.(newFlipped)
+    notifySettingsChange({ flipped: newFlipped })
+  }
+
+  const toggleFullscreen = () => {
+    const newFullscreen = !fullscreen
+    setFullscreen(newFullscreen)
+    onFullscreenChange?.(newFullscreen)
+    notifySettingsChange({ fullscreen: newFullscreen })
+  }
+
+  const handleBrightnessChange = (value: number) => {
+    setBrightness(value)
+    notifySettingsChange({ brightness: value })
+  }
+
+  const handleContrastChange = (value: number) => {
+    setContrast(value)
+    notifySettingsChange({ contrast: value })
+  }
+
+  const handleResolutionChange = (value: string) => {
+    setResolution(value)
+    notifySettingsChange({ resolution: value })
+  }
+
+  const handleRestartCamera = () => {
+    onRestartCamera?.()
+  }
+
+  const notifySettingsChange = (partialSettings: Partial<CameraSettings>) => {
+    const currentSettings: CameraSettings = {
+      flipped,
+      fullscreen,
+      brightness,
+      contrast,
+      resolution,
+      ...partialSettings
+    }
+    onSettingsChange?.(currentSettings)
+  }
 
   // Variantes para animaciones
   const modalVariants = {
@@ -56,8 +126,10 @@ const CameraSettings: React.FC<CameraSettingsProps> = ({ className = '' }) => {
   }
 
   return (
-    <div className={`relative ${className}`}>
-      {/* Botón de configuración */}
+    <div
+      className={`relative flex justify-center items-center ${className}`}
+      style={{ height: '100%' }}
+    >
       <motion.button
         className="p-3 rounded-full bg-background-accent/20 hover:bg-background-accent/30 text-white transition-colors"
         onClick={toggleSettings}
@@ -137,7 +209,7 @@ const CameraSettings: React.FC<CameraSettingsProps> = ({ className = '' }) => {
                       whileTap={{ scale: 0.97 }}
                       aria-pressed={flipped}
                     >
-                      <Info className="w-4 h-4 mr-2" />
+                      <FlipHorizontal className="w-4 h-4 mr-2" />
                       Voltear
                       {flipped && <Check className="w-3 h-3 ml-1" />}
                     </motion.button>
@@ -163,7 +235,7 @@ const CameraSettings: React.FC<CameraSettingsProps> = ({ className = '' }) => {
                     </label>
                     <select
                       value={resolution}
-                      onChange={(e) => setResolution(e.target.value)}
+                      onChange={(e) => handleResolutionChange(e.target.value)}
                       className="w-full bg-white/10 border border-white/20 rounded-lg py-2 px-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       aria-label="Seleccionar resolución"
                     >
@@ -176,6 +248,7 @@ const CameraSettings: React.FC<CameraSettingsProps> = ({ className = '' }) => {
                   {/* Botón de reinicio */}
                   <motion.button
                     className="w-full mt-2 py-2 px-3 rounded-lg text-sm flex items-center justify-center bg-white/10 text-white/80 hover:bg-white/20"
+                    onClick={handleRestartCamera}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >
@@ -199,12 +272,12 @@ const CameraSettings: React.FC<CameraSettingsProps> = ({ className = '' }) => {
                       id="brightness"
                       type="range"
                       min="0"
-                      max="100"
+                      max="200"
                       value={brightness}
-                      onChange={(e) => setBrightness(parseInt(e.target.value))}
+                      onChange={(e) => handleBrightnessChange(parseInt(e.target.value))}
                       className="w-full accent-blue-500 bg-white/10 rounded-lg h-2"
                       aria-valuemin={0}
-                      aria-valuemax={100}
+                      aria-valuemax={200}
                       aria-valuenow={brightness}
                     />
                   </div>
@@ -221,12 +294,12 @@ const CameraSettings: React.FC<CameraSettingsProps> = ({ className = '' }) => {
                       id="contrast"
                       type="range"
                       min="0"
-                      max="100"
+                      max="200"
                       value={contrast}
-                      onChange={(e) => setContrast(parseInt(e.target.value))}
+                      onChange={(e) => handleContrastChange(parseInt(e.target.value))}
                       className="w-full accent-blue-500 bg-white/10 rounded-lg h-2"
                       aria-valuemin={0}
-                      aria-valuemax={100}
+                      aria-valuemax={200}
                       aria-valuenow={contrast}
                     />
                   </div>
