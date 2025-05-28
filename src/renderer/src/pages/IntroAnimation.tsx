@@ -3,6 +3,7 @@ import introSound from '@renderer/assets/IntroSound.mp3'
 import { BackgroundLines } from '@renderer/components/BackgroundLines'
 import { GlowingText } from '@renderer/components/GlowingText'
 import { AnimatePresence, motion } from 'framer-motion'
+import { SkipForward } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -10,7 +11,15 @@ export default function IntroAnimation() {
   const [showTitle, setShowTitle] = useState(false)
   const [showBackground, setShowBackground] = useState(false)
   const [fadeOut, setFadeOut] = useState(false)
+  const [showSkipButton, setShowSkipButton] = useState(false)
   const navigate = useNavigate()
+
+  const handleSkip = () => {
+    setFadeOut(true)
+    setTimeout(() => {
+      navigate('/home')
+    }, 500)
+  }
 
   useEffect(() => {
     const audio = new Audio(introSound)
@@ -22,6 +31,7 @@ export default function IntroAnimation() {
 
       const bgTimer = setTimeout(() => {
         setShowBackground(true)
+        setShowSkipButton(true) // Show skip button when background appears
 
         // Navigate to landing screen after 5 seconds
         const navigationTimer = setTimeout(() => {
@@ -66,6 +76,23 @@ export default function IntroAnimation() {
           )}
         </AnimatePresence>
       </div>
+
+      {/* Skip Button */}
+      <AnimatePresence>
+        {showSkipButton && (
+          <motion.button
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            transition={{ duration: 0.3 }}
+            onClick={handleSkip}
+            className="fixed bottom-6 right-6 z-20 flex items-center gap-2 px-4 py-2 bg-background-secondary/80 backdrop-blur-sm border border-border-primary rounded-lg text-foreground-secondary hover:bg-background-tertiary hover:text-foreground-primary transition-all duration-250 group"
+          >
+            <span className="text-sm font-medium">Saltar</span>
+            <SkipForward className="w-4 h-4 group-hover:translate-x-0.5 transition-transform duration-250" />
+          </motion.button>
+        )}
+      </AnimatePresence>
     </motion.div>
   )
 }

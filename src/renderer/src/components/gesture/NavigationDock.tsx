@@ -1,10 +1,22 @@
 import { motion } from 'framer-motion'
-import { Hand, MousePointerClick, Palette, Settings, Sun, Zap } from 'lucide-react'
+import { AppWindow, Palette, SquarePlay, Sun, Volume2, Zap } from 'lucide-react'
 import React, { useState } from 'react'
-import CameraSettings from './CameraSettings'
+import CameraSettings, { CameraSettings as CameraSettingsType } from './CameraSettings'
 import DockIcon from './DockIcon'
 
-const NavigationDock: React.FC = () => {
+interface NavigationDockProps {
+  onSettingsChange?: (settings: CameraSettingsType) => void
+  onFlipChange?: (flipped: boolean) => void
+  onFullscreenChange?: (fullscreen: boolean) => void
+  onRestartCamera?: () => void
+}
+
+const NavigationDock: React.FC<NavigationDockProps> = ({
+  onSettingsChange,
+  onFlipChange,
+  onFullscreenChange,
+  onRestartCamera
+}) => {
   const [activeIcon, setActiveIcon] = useState<string | null>(null)
 
   const handleIconClick = (iconName: string) => {
@@ -47,12 +59,12 @@ const NavigationDock: React.FC = () => {
       animate="visible"
       aria-label="Dock de navegación"
     >
-      {/* Grid de 2 columnas con 3 filas para gestos */}
-      <div className="grid grid-cols-2 gap-3 mb-4">
+      {/* Grid responsivo - 1 columna en móvil, 2 en tablet+ */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
         <motion.div variants={itemVariants}>
           <DockIcon
-            icon={Hand}
-            name="Gestos"
+            icon={Volume2}
+            name="Volumen"
             color="purple"
             onClick={() => handleIconClick('gestures')}
             active={activeIcon === 'gestures'}
@@ -61,8 +73,8 @@ const NavigationDock: React.FC = () => {
 
         <motion.div variants={itemVariants}>
           <DockIcon
-            icon={MousePointerClick}
-            name="Controles"
+            icon={Palette}
+            name="Interacción 1"
             color="green"
             onClick={() => handleIconClick('controls')}
             active={activeIcon === 'controls'}
@@ -71,9 +83,9 @@ const NavigationDock: React.FC = () => {
 
         <motion.div variants={itemVariants}>
           <DockIcon
-            icon={Palette}
-            name="Apariencia"
-            color="purple"
+            icon={AppWindow}
+            name="Aplicaciones"
+            color="amber"
             onClick={() => handleIconClick('appearance')}
             active={activeIcon === 'appearance'}
           />
@@ -82,8 +94,8 @@ const NavigationDock: React.FC = () => {
         <motion.div variants={itemVariants}>
           <DockIcon
             icon={Sun}
-            name="Tema"
-            color="amber"
+            name="Interacción 2"
+            color="pink"
             onClick={() => handleIconClick('theme')}
             active={activeIcon === 'theme'}
           />
@@ -91,8 +103,8 @@ const NavigationDock: React.FC = () => {
 
         <motion.div variants={itemVariants}>
           <DockIcon
-            icon={Zap}
-            name="Rendimiento"
+            icon={SquarePlay}
+            name="Multimedia"
             color="blue"
             onClick={() => handleIconClick('performance')}
             active={activeIcon === 'performance'}
@@ -101,18 +113,37 @@ const NavigationDock: React.FC = () => {
 
         <motion.div variants={itemVariants}>
           <DockIcon
-            icon={Settings}
-            name="Configurar"
-            color="green"
+            icon={Zap}
+            name="Interacción 3"
+            color="red"
             onClick={() => handleIconClick('settings')}
             active={activeIcon === 'settings'}
           />
         </motion.div>
       </div>
 
-      {/* Botón de configuraciones de cámara */}
-      <motion.div variants={itemVariants} className="w-full">
-        <CameraSettings className="w-full" />
+      {/* Separador visual */}
+      <motion.div
+        variants={itemVariants}
+        className="w-full h-px bg-gradient-to-r from-transparent via-white/20 to-transparent mb-4"
+      />
+
+      {/* Configuraciones de cámara - Sección principal */}
+      <motion.div
+        variants={itemVariants}
+        className="w-full flex flex-col items-center justify-center"
+      >
+        <div className="mb-3 text-center">
+          <h3 className="text-sm font-medium text-white/90 mb-1">Configuración de Cámara</h3>
+          <p className="text-xs text-white/60">Ajusta los parámetros de video y visualización</p>
+        </div>
+        <CameraSettings
+          className="w-full max-w-md"
+          onSettingsChange={onSettingsChange}
+          onFlipChange={onFlipChange}
+          onFullscreenChange={onFullscreenChange}
+          onRestartCamera={onRestartCamera}
+        />
       </motion.div>
 
       {/* Panel de información contextual */}
@@ -130,34 +161,34 @@ const AnimatedPanel: React.FC<AnimatedPanelProps> = ({ activeIcon }) => {
 
   const panelContent = {
     gestures: {
-      title: 'Gestos',
-      description: 'Aprende y personaliza los gestos disponibles.',
+      title: 'Volumen',
+      description: 'Sube, baja o mutea el volumen de tu sistema.  ',
       color: 'border-purple-500/30 bg-purple-500/10'
     },
     controls: {
-      title: 'Controles',
-      description: 'Configura la sensibilidad y precisión de los gestos.',
+      title: 'Interacción 1',
+      description: 'Personaliza.',
       color: 'border-green-500/30 bg-green-500/10'
     },
     appearance: {
-      title: 'Apariencia',
-      description: 'Ajusta colores, tamaños y efectos visuales.',
-      color: 'border-purple-500/30 bg-purple-500/10'
-    },
-    theme: {
-      title: 'Tema',
-      description: 'Personaliza el aspecto visual de la interfaz.',
+      title: 'Aplicaciones',
+      description: 'Abre o cierra aplicaciones de tu sistema.',
       color: 'border-amber-500/30 bg-amber-500/10'
     },
+    theme: {
+      title: 'Interacción 2',
+      description: 'Personaliza.',
+      color: 'border-pink-500/30 bg-pink-500/10'
+    },
     performance: {
-      title: 'Rendimiento',
-      description: 'Optimiza el rendimiento de la detección de gestos.',
+      title: 'Multimedia',
+      description: 'Adelanta, retroduce, pausa o reinicia la reproducción.',
       color: 'border-blue-500/30 bg-blue-500/10'
     },
     settings: {
-      title: 'Configuraciones',
-      description: 'Ajusta configuraciones generales del sistema.',
-      color: 'border-green-500/30 bg-green-500/10'
+      title: 'Interacción 3',
+      description: 'Personaliza.',
+      color: 'border-red-500/30 bg-red-500/10'
     }
   }
 

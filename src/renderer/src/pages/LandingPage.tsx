@@ -1,5 +1,3 @@
-'use client'
-
 import { motion } from 'framer-motion'
 import { Cpu, Eye, Hand, Zap } from 'lucide-react'
 import { useEffect, useState } from 'react'

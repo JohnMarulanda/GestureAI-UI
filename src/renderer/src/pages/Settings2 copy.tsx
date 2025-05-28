@@ -22,23 +22,6 @@ import {
 import { useState } from 'react'
 
 export default function SettingsInterface() {
-  // Función para actualizar el tamaño de la ventana
-  const updateWindowSize = (size: string) => {
-    let dimensions = { width: 1920, height: 1080 } // tamaño estándar
-
-    switch (size) {
-      case 'compact':
-        dimensions = { width: 1280, height: 720 }
-        break
-      case 'wide':
-        dimensions = { width: 2560, height: 1440 }
-        break
-      default:
-        dimensions = { width: 1920, height: 1080 } // 'standard'
-    }
-
-    window.electron.ipcRenderer.send('update-window-size', dimensions)
-  }
   const [language, setLanguage] = useState('English')
   const [theme, setTheme] = useState('dark')
   const [textSize, setTextSize] = useState(16)
@@ -344,7 +327,6 @@ export default function SettingsInterface() {
                           onClick={() => {
                             setScreenSize(size)
                             setScreenSizeDropdownOpen(false)
-                            updateWindowSize(size)
                           }}
                           isSelected={screenSize === size}
                         >
