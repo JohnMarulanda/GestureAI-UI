@@ -10,69 +10,69 @@ const GESTURES_DATA = [
   [
     {
       id: 1,
-      name: 'Lorem ipsum',
-      value: '1.20 WETH',
-      image: '/images/gesture-1.png',
-      description: 'A fluid hand movement from left to right with palm open',
-      settings: ['Sensitivity', 'Speed', 'Recognition distance']
+      name: 'Control Volumen',
+      value: 'Gesto 1',
+      image: '/images/gestures/volume.png',
+      description: 'Movimiento suave de mano horizontal con palma abierta para controlar volumen.',
+      settings: ['Sensibilidad', 'Velocidad', 'Distancia de reconocimiento']
     },
     {
       id: 2,
-      name: 'LSD swirl',
-      value: '0.85 WETH',
-      image: '/images/gesture-2.png',
-      description: 'A circular motion with index finger extended',
-      settings: ['Rotation', 'Diameter', 'Completion threshold']
+      name: 'Abrir Aplicaciones',
+      value: 'Gesto 2',
+      image: '/images/gestures/open-app.png',
+      description: 'Movimiento circular con dedo índice extendido para abrir aplicaciones.',
+      settings: ['Rotación', 'Diámetro', 'Umbral de completitud']
     },
     {
       id: 3,
-      name: 'Solar oil swirl',
-      value: '0.37 WETH',
-      image: '/images/gesture-3.png',
-      description: 'A pinch and expand motion with thumb and index finger',
-      settings: ['Pinch sensitivity', 'Expansion rate', 'Trigger threshold']
+      name: 'Control Multimedia',
+      value: 'Gesto 3',
+      image: '/images/gestures/media-control.png',
+      description: 'Gestos de pellizcar y expandir con pulgar e índice para controlar multimedia.',
+      settings: ['Sensibilidad de pellizco', 'Velocidad de expansión', 'Umbral de activación']
     },
     {
       id: 4,
-      name: 'Airtist paintbrush',
-      value: '0.55 WETH',
-      image: '/images/gesture-4.png',
-      description: 'A sweeping motion with all fingers extended',
-      settings: ['Brush size', 'Stroke smoothing', 'Pressure sensitivity']
+      name: 'Movimiento Mouse',
+      value: 'Gesto 4',
+      image: '/images/gestures/mouse-move.png',
+      description: 'Movimiento barrido con todos los dedos extendidos para controlar cursor.',
+      settings: ['Tamaño del pincel', 'Suavizado de trazo', 'Sensibilidad a presión']
     }
   ],
   [
     {
       id: 5,
-      name: 'Digitorum scrollus',
-      value: '0.90 WETH',
-      image: '/images/gesture-5.png',
-      description: 'A two-finger vertical swipe for precise scrolling',
-      settings: ['Scroll speed', 'Acceleration', 'Direction lock']
+      name: 'Ajustar Brillo',
+      value: 'Gesto 1',
+      image: '/images/gestures/brightness.png',
+      description: 'Deslizamiento vertical con dos dedos para ajustar brillo de pantalla.',
+      settings: ['Velocidad de desplazamiento', 'Aceleración', 'Bloqueo de dirección']
     },
     {
       id: 6,
-      name: 'Quantum select',
-      value: '1.45 WETH',
-      image: '/images/gesture-6.png',
-      description: 'A quick tap and hold motion for selection',
-      settings: ['Hold duration', 'Selection area', 'Multi-select mode']
+      name: 'Navegación Rápida',
+      value: 'Gesto 2',
+      image: '/images/gestures/navigation.png',
+      description: 'Toque rápido y mantener para seleccionar elementos en pantalla.',
+      settings: ['Duración de toque', 'Área de selección', 'Modo multi-selección']
     },
     {
       id: 7,
-      name: 'Nebula zoom',
-      value: '1.10 WETH',
-      image: '/images/gesture-7.png',
-      description: 'A pinch gesture for zooming in and out',
-      settings: ['Zoom factor', 'Smoothness', 'Reset threshold']
+      name: 'Atajos de Teclado',
+      value: 'Gesto 3',
+      image: '/images/gestures/keyboard-shortcuts.png',
+      description: 'Gestos de pellizcar para zoom dentro y fuera del contenido.',
+      settings: ['Factor de zoom', 'Suavidad', 'Umbral de reinicio']
     },
     {
       id: 8,
-      name: 'Vortex rotate',
-      value: '0.75 WETH',
-      image: '/images/gesture-8.png',
-      description: 'A two-finger rotation gesture',
-      settings: ['Rotation sensitivity', 'Snapping angles', 'Momentum']
+      name: 'Control del Sistema',
+      value: 'Gesto 4',
+      image: '/images/gestures/system-control.png',
+      description: 'Rotación con dos dedos para controlar funciones avanzadas del sistema.',
+      settings: ['Sensibilidad de rotación', 'Ángulos de ajuste', 'Momentum']
     }
   ]
 ]
