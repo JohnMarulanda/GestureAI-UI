@@ -7,7 +7,7 @@ import IntroAnimation from './pages/IntroAnimation'
 import ControlPanel from './pages/ControlPanel'
 import GestureSettings from './pages/GestureSeettings'
 import GestureTesting from './pages/GestureTesting'
-import LandingPage2 from './pages/LandingPage'
+import LandingPage from './pages/LandingPage'
 import SettingsInterface from './pages/Settings2'
 
 function App(): JSX.Element {
@@ -18,7 +18,7 @@ function App(): JSX.Element {
 
       <Routes>
         <Route path="/" element={<IntroAnimation />} />
-        <Route path="/home" element={<LandingPage2 />} />
+        <Route path="/home" element={<LandingPage />} />
 
         <Route path="/detection-test" element={<GestureTesting />} />
         <Route path="/detection-settings" element={<GestureSettings />} />
