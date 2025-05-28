@@ -108,7 +108,6 @@ const CameraInterface = forwardRef<CameraInterfaceRef, CameraInterfaceProps>(
         videoRef.current.style.filter = `brightness(${brightness}%) contrast(${contrast}%)`
       }
     }, [brightness, contrast])
-
     return (
       <motion.div
         className="relative w-full max-w-4xl mx-auto overflow-hidden rounded-2xl shadow-xl"

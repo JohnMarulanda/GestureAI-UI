@@ -53,7 +53,7 @@ export const Subtitle: React.FC<SubtitleProps> = ({
   return (
     <motion.h2
       id={id}
-      className={`text-xl md:text-2xl font-medium ${secondary ? 'text-white/70' : 'text-white/90'} ${className}`}
+      className={`text-lg md:text-xl font-medium ${secondary ? 'text-white/70' : 'text-white/90'} ${className}`}
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{
