@@ -9,6 +9,8 @@ import { CustomButton } from '@/components/support/CustomButton'
 import { CustomInput } from '@/components/support/CustomInput'
 import { CustomSelect } from '@/components/support/CustomSelect'
 import { CustomTextarea } from '@/components/support/CustomTextarea'
+import { useTextSize } from '@/hooks/useTextSize'
+import EmailService from '@/services/emailService'
 import { motion } from 'framer-motion'
 import {
   ArrowRight,
@@ -16,7 +18,7 @@ import {
   CheckCircle,
   Copy,
   ExternalLink,
-  Github,
+  GitFork,
   HelpCircle,
   Info,
   Mail,
@@ -25,6 +27,8 @@ import {
   Star
 } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { MainHeading, Subtitle } from '@renderer/components/gesture/Typography'
+import '../styles/custom-text-sizes.css'
 
 // Variantes de animación mejoradas con física de resorte para movimientos más naturales
 const containerVariants = {
@@ -76,6 +80,9 @@ const formItemVariants = {
 }
 
 export default function HelpAndSupport() {
+  // Hook para aplicar el tamaño de texto personalizado
+  useTextSize()
+  
   const [formState, setFormState] = useState({
     name: '',
     email: '',
@@ -86,21 +93,23 @@ export default function HelpAndSupport() {
   const [copySuccess, setCopySuccess] = useState(false)
   const [formErrors, setFormErrors] = useState<Record<string, string>>({})
   const [isFormValid, setIsFormValid] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitMessage, setSubmitMessage] = useState('')
 
   // Validar formulario cuando cambian los campos
   useEffect(() => {
     const errors: Record<string, string> = {}
 
     if (formState.name && formState.name.length < 2) {
-      errors.name = 'Name must be at least 2 characters'
+      errors.name = 'El nombre debe tener al menos 2 caracteres'
     }
 
     if (formState.email && !/^\S+@\S+\.\S+$/.test(formState.email)) {
-      errors.email = 'Please enter a valid email address'
+      errors.email = 'Por favor, introduce un correo electrónico válido'
     }
 
     if (formState.message && formState.message.length < 10) {
-      errors.message = 'Message must be at least 10 characters'
+      errors.message = 'El mensaje debe tener al menos 10 caracteres'
     }
 
     setFormErrors(errors)
@@ -117,26 +126,48 @@ export default function HelpAndSupport() {
     setFormState((prev) => ({ ...prev, [field]: value }))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!isFormValid) return
+    if (!isFormValid || isSubmitting) return
 
-    // Simulate form submission with loading state
-    setTimeout(() => {
-      setFormSubmitted(true)
-      // Reset after 3 seconds
+    setIsSubmitting(true)
+    setSubmitMessage('')
+
+    try {
+      const result = await EmailService.sendSupportEmail(formState)
+      
+      if (result.success) {
+        setFormSubmitted(true)
+        setSubmitMessage(result.message)
+        // Reset after 5 seconds
+        setTimeout(() => {
+          setFormSubmitted(false)
+          setSubmitMessage('')
+          // Clear form
+          setFormState({
+            name: '',
+            email: '',
+            reason: '',
+            message: ''
+          })
+        }, 5000)
+      } else {
+        setSubmitMessage(result.message)
+        // Clear error message after 5 seconds
+        setTimeout(() => {
+          setSubmitMessage('')
+        }, 5000)
+      }
+    } catch (error) {
+      console.error('Error al enviar email:', error)
+      setSubmitMessage('Error al enviar el mensaje. Por favor, inténtalo más tarde.')
       setTimeout(() => {
-        setFormSubmitted(false)
-        // Clear form
-        setFormState({
-          name: '',
-          email: '',
-          reason: '',
-          message: ''
-        })
-      }, 3000)
-    }, 800)
+        setSubmitMessage('')
+      }, 5000)
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const handleCopyEmail = (email: string) => {
@@ -146,46 +177,27 @@ export default function HelpAndSupport() {
   }
 
   return (
-    <div className="relative min-h-screen text-foreground-primary font-sans">
+    <div className="relative min-h-screen text-foreground-primary font-sans supports-custom-text-size">
       <Background />
       <main className="container mx-auto px-4 py-12 md:py-16 lg:py-20">
-        {/* Header con animación mejorada */}
-        <motion.header
-          className="text-center mb-12"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{
-            duration: 0.5,
-            type: 'spring',
-            stiffness: 100,
-            damping: 20
-          }}
-        >
-          <motion.h1
-            className="font-serif text-4xl md:text-5xl lg:text-6xl mb-4 font-light tracking-wide bg-clip-text text-transparent bg-gradient-to-r from-accent-primary to-accent-secondary"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.2, duration: 0.5 }}
-          >
-            Help and Support
-          </motion.h1>
-          <motion.p
-            className="text-foreground-secondary max-w-2xl mx-auto"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4, duration: 0.5 }}
-          >
-            We're here to help you get the most out of your gesture control experience.
-          </motion.p>
+        {/* Sección de encabezado */}
+        
+       <motion.header className="mb-4 pt-4 md:pt-8" variants={itemVariants}>
+          <div className="mb-8 float-animation text-center">
+            <MainHeading>Ayuda y Soporte</MainHeading>
+
+            <Subtitle className="text-center max-w-2xl mx-auto mt-2" secondary>
+              Estamos aquí para ayudarte a sacar el máximo provecho de tu experiencia con el control gestual.
+            </Subtitle>
+          </div>
         </motion.header>
 
-        {/* Bento Grid Layout con animaciones escalonadas */}
         <motion.div
           className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto"
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          aria-label="Support options and contact form"
+          aria-label="Opciones de soporte y formulario de contacto"
         >
           {/* Contact Form */}
           <motion.div
@@ -195,7 +207,7 @@ export default function HelpAndSupport() {
           >
             <div className="flex items-center gap-3 mb-6 text-accent-primary">
               <MessageSquare className="h-6 w-6" />
-              <h2 className="text-2xl font-serif">Contact Support</h2>
+              <h2 className="text-2xl font-serif">Contactar Soporte</h2>
             </div>
 
             {formSubmitted ? (
@@ -217,12 +229,12 @@ export default function HelpAndSupport() {
                 >
                   <CheckCircle className="h-16 w-16 text-green-500 mb-4" />
                 </motion.div>
-                <h3 className="text-xl font-medium mb-2">Message Sent!</h3>
+                <h3 className="text-xl font-medium mb-2">¡Mensaje Enviado!</h3>
                 <p className="text-foreground-secondary mb-6">
-                  Thank you for reaching out. We'll get back to you shortly.
+                  {submitMessage || 'Gracias por contactarnos. Te responderemos pronto.'}
                 </p>
                 <CustomButton variant="outline" onClick={() => setFormSubmitted(false)}>
-                  Send Another Message
+                  Enviar Otro Mensaje
                 </CustomButton>
               </motion.div>
             ) : (
@@ -234,9 +246,9 @@ export default function HelpAndSupport() {
                   animate="visible"
                 >
                   <CustomInput
-                    label="Your Name"
+                    label="Tu Nombre"
                     type="text"
-                    placeholder="Enter your name"
+                    placeholder="Ingresa tu nombre"
                     required
                     value={formState.name}
                     onChange={(e) => handleFormChange('name', e.target.value)}
@@ -252,9 +264,9 @@ export default function HelpAndSupport() {
                   animate="visible"
                 >
                   <CustomInput
-                    label="Email Address"
+                    label="Correo Electrónico"
                     type="email"
-                    placeholder="Enter your email"
+                    placeholder="Ingresa tu correo"
                     required
                     value={formState.email}
                     onChange={(e) => handleFormChange('email', e.target.value)}
@@ -270,15 +282,15 @@ export default function HelpAndSupport() {
                   animate="visible"
                 >
                   <CustomSelect
-                    label="Reason for Contact"
+                    label="Motivo de Contacto"
                     options={[
-                      { value: 'technical', label: 'Technical Issue' },
-                      { value: 'billing', label: 'Billing Question' },
-                      { value: 'feature', label: 'Feature Request' },
-                      { value: 'feedback', label: 'General Feedback' },
-                      { value: 'other', label: 'Other' }
+                      { value: 'technical', label: 'Problema Técnico' },
+                      { value: 'billing', label: 'Consulta' },
+                      { value: 'feature', label: 'Sugerencia' },
+                      { value: 'feedback', label: 'Comentarios Generales' },
+                      { value: 'other', label: 'Otro' }
                     ]}
-                    placeholder="Select a reason"
+                    placeholder="Selecciona un motivo"
                     value={formState.reason}
                     onChange={(value) => handleFormChange('reason', value)}
                     required
@@ -292,8 +304,8 @@ export default function HelpAndSupport() {
                   animate="visible"
                 >
                   <CustomTextarea
-                    label="Your Message"
-                    placeholder="Please describe your issue or question in detail"
+                    label="Tu Mensaje"
+                    placeholder="Por favor, describe tu problema o pregunta en detalle"
                     rows={5}
                     required
                     value={formState.message}
@@ -314,12 +326,26 @@ export default function HelpAndSupport() {
                 >
                   <CustomButton
                     type="submit"
-                    icon={<Send className="h-4 w-4" />}
+                    icon={isSubmitting ? undefined : <Send className="h-4 w-4" />}
                     fullWidth
-                    disabled={!isFormValid}
+                    disabled={!isFormValid || isSubmitting}
                   >
-                    Submit Request
+                    {isSubmitting ? 'Enviando...' : 'Enviar Solicitud'}
                   </CustomButton>
+                  
+                  {submitMessage && !formSubmitted && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className={`mt-3 p-3 rounded-lg text-sm ${
+                        submitMessage.includes('Error') || submitMessage.includes('error')
+                          ? 'bg-red-100 text-red-700 border border-red-200'
+                          : 'bg-green-100 text-green-700 border border-green-200'
+                      }`}
+                    >
+                      {submitMessage}
+                    </motion.div>
+                  )}
                 </motion.div>
               </form>
             )}
@@ -334,30 +360,78 @@ export default function HelpAndSupport() {
             <div className="mb-4 pb-4 border-b border-border-primary">
               <div className="flex items-center gap-3 mb-3 text-accent-primary">
                 <HelpCircle className="h-5 w-5" />
-                <h3 className="text-xl font-serif">Need help?</h3>
+                <h3 className="text-xl font-serif">¿Necesitas ayuda?</h3>
               </div>
               <p className="text-foreground-secondary text-sm">
-                We're committed to making your experience with our app as smooth as possible.
+                Estamos comprometidos a hacer que tu experiencia con nuestra aplicación sea lo más fluida posible.
               </p>
             </div>
 
-            <div className="mt-1">
-              <div className="flex items-center gap-3 mb-3 text-accent-primary">
-                <Github className="h-5 w-5" />
-                <h3 className="text-xl font-serif">View source code</h3>
+            <div className="flex items-center gap-3 mb-4 text-accent-primary">
+              <GitFork className="h-5 w-5" />
+              <h3 className="text-xl font-serif">Repositorios</h3>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <h4 className="text-sm font-medium text-foreground-primary mb-2">Frontend (UI)</h4>
+                <p className="text-foreground-secondary text-sm mb-3">
+                  Interfaz de usuario construida con React y Electron.
+                </p>
+                <CustomButton
+                  variant="outline"
+                  size="sm"
+                  icon={<ExternalLink size={14} />}
+                  iconPosition="right"
+                  onClick={() => window.open('https://github.com/JohnMarulanda/GestureAI-UI', '_blank')}
+                  aria-label="Visitar repositorio de Frontend (se abre en nueva ventana)"
+                  className="w-full"
+                >
+                  Ver Frontend
+                </CustomButton>
               </div>
-              <p className="text-foreground-secondary text-sm mb-3">
-                Check out our GitHub repository to review the code and contribute.
-              </p>
-              <CustomButton
-                variant="outline"
-                icon={<ExternalLink size={16} />}
-                iconPosition="right"
-                onClick={() => window.open('https://github.com/yourusername/your-repo', '_blank')}
-                aria-label="Visit GitHub repository (opens in new window)"
-              >
-                Visit GitHub
-              </CustomButton>
+
+              <div>
+                <h4 className="text-sm font-medium text-foreground-primary mb-2">Backend (API)</h4>
+                <p className="text-foreground-secondary text-sm mb-3">
+                  Procesamiento de gestos en Python.
+                </p>
+                <CustomButton
+                  variant="outline"
+                  size="sm"
+                  icon={<ExternalLink size={14} />}
+                  iconPosition="right"
+                  onClick={() => window.open('https://github.com/JohnMarulanda/GestureAI-Core', '_blank')}
+                  aria-label="Visitar repositorio de Backend (se abre en nueva ventana)"
+                  className="w-full"
+                >
+                  Ver Backend
+                </CustomButton>
+              </div>
+
+              <div className="pt-2 pb-4 border-b border-border-primary">
+                <p className="text-foreground-secondary text-sm">
+                  ¿Encontraste un error o tienes una sugerencia? ¡Contribuye al proyecto!
+                </p>
+              </div>
+
+              <div>
+                <h4 className="text-sm font-medium text-foreground-primary mb-2">Encuesta de Usabilidad</h4>
+                <p className="text-foreground-secondary text-sm mb-3">
+                  ¡Ayúdanos a mejorar! Completa nuestra encuesta de usabilidad y comparte tu experiencia con GestOS.
+                </p>
+                <CustomButton
+                  variant="outline"
+                  size="sm"
+                  icon={<Star size={14} />}
+                  iconPosition="right"
+                  onClick={() => window.open('https://docs.google.com/forms/d/e/1FAIpQLSe-xFfvsmlu-toMN2OKWokRlKbVYD-nDxtjD9j-bCESe6djrg/viewform?usp=preview', '_blank')}
+                  aria-label="Participar en la encuesta de usabilidad (se abre en nueva ventana)"
+                  className="w-full"
+                >
+                  Participar en Encuesta
+                </CustomButton>
+              </div>
             </div>
           </motion.div>
 
@@ -369,20 +443,20 @@ export default function HelpAndSupport() {
           >
             <div className="flex items-center gap-3 mb-4 text-accent-primary">
               <BookOpen className="h-5 w-5" />
-              <h3 className="text-xl font-serif">Documentation</h3>
+              <h3 className="text-xl font-serif">Documentación</h3>
             </div>
             <p className="text-foreground-secondary">
-              Access tutorials, guides, and detailed documentation to help you get the most out of
-              our app.
+              Accede a tutoriales, guías y documentación detallada para ayudarte a sacar el máximo provecho
+              de nuestra aplicación.
             </p>
             <div className="mt-auto pt-4">
               <CustomButton
                 variant="outline"
                 icon={<ArrowRight size={16} />}
                 iconPosition="right"
-                aria-label="View documentation"
+                aria-label="Ver documentación"
               >
-                View Docs
+                Ver Documentación
               </CustomButton>
             </div>
           </motion.div>
@@ -395,18 +469,18 @@ export default function HelpAndSupport() {
           >
             <div className="flex items-center gap-3 mb-4 text-accent-primary">
               <Mail className="h-5 w-5" />
-              <h3 className="text-xl font-serif">Email Support</h3>
+              <h3 className="text-xl font-serif">Soporte por Email</h3>
             </div>
-            <div className="flex items-center justify-between bg-background-primary/60 p-3 rounded-lg border border-border-primary">
-              <span className="text-foreground-primary">support@gestureapp.com</span>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-4 bg-background-primary/60 p-3 rounded-lg border border-border-primary">
+              <span className="text-foreground-primary text-sm sm:text-base break-all">john.valero@correounivalle.edu.co</span>
               <EmailCopyButton
-                email="support@gestureapp.com"
+                email="john.valero@correounivalle.edu.co"
                 success={copySuccess}
                 onCopy={handleCopyEmail}
               />
             </div>
             <p className="text-foreground-muted text-sm mt-3">
-              We typically respond within 24 hours.
+              Normalmente respondemos en menos de 72 horas.
             </p>
           </motion.div>
 
@@ -418,49 +492,14 @@ export default function HelpAndSupport() {
           >
             <div className="flex items-center gap-3 mb-3 text-accent-primary">
               <Info className="h-5 w-5" />
-              <h3 className="text-xl font-serif">Get support and learn more</h3>
+              <h3 className="text-xl font-serif">Obtén soporte y aprende más</h3>
             </div>
             <p className="text-foreground-secondary">
-              Discover how to use the gesture app controller and unlock its full potential.
+              Descubre cómo usar el controlador gestual y desbloquea todo su potencial desde la página de inicio de presentación.
             </p>
             <div className="mt-auto pt-4">
-              <CustomButton variant="secondary" aria-label="Learn more about gesture controls">
-                Learn More
-              </CustomButton>
-            </div>
-          </motion.div>
-
-          {/* Featured Tutorials - Nuevo componente */}
-          <motion.div
-            className="col-span-1 bg-background-secondary/30 rounded-2xl p-6 shadow-dark-lg backdrop-blur-md flex flex-col border border-border-primary hover:border-accent-muted/30 hover:shadow-zinc-hover transition-all duration-300"
-            variants={itemVariants}
-            whileHover="hover"
-          >
-            <div className="flex items-center gap-3 mb-4 text-accent-primary">
-              <Star className="h-5 w-5" />
-              <h3 className="text-xl font-serif">Featured Tutorials</h3>
-            </div>
-            <ul className="space-y-3 text-foreground-secondary">
-              {[
-                'Getting Started with Gesture Controls',
-                'Advanced Gesture Customization',
-                'Troubleshooting Common Issues'
-              ].map((tutorial, i) => (
-                <motion.li
-                  key={i}
-                  className="flex items-center gap-2"
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.1 + i * 0.1 }}
-                >
-                  <div className="w-1.5 h-1.5 rounded-full bg-accent-primary"></div>
-                  <span>{tutorial}</span>
-                </motion.li>
-              ))}
-            </ul>
-            <div className="mt-auto pt-4">
-              <CustomButton variant="outline" size="sm" aria-label="View all tutorials">
-                View All
+              <CustomButton variant="secondary" aria-label="Aprende más sobre los controles gestuales">
+                Aprende Más
               </CustomButton>
             </div>
           </motion.div>
@@ -474,37 +513,25 @@ export default function HelpAndSupport() {
               <span className="inline-flex items-center justify-center w-7 h-7 bg-accent-primary text-foreground-contrast rounded-full text-sm">
                 ?
               </span>
-              Frequently Asked Questions
+              Preguntas Frecuentes
             </h3>
             <CustomAccordion type="single" collapsible className="w-full">
               {[
                 {
-                  q: 'How do I reset my password?',
-                  a: "Click on 'Forgot Password' on the login page. You'll get an email with steps to reset it."
+                  q: '¿Puedo usar la aplicación gestual en múltiples dispositivos?',
+                  a: '¡Pronto! Pronto sera posible esta funcionalidad para que puedas usar la aplicación en múltiples dispositivos.'
                 },
                 {
-                  q: 'Can I use the gesture app on multiple devices?',
-                  a: 'Yes! Just sign in on each device where the app is installed.'
+                  q: '¿Cómo puedo personalizar los controles gestuales?',
+                  a: 'Actualmente estamos trabajando en esta funcionalidad. Quedate al pendiente de nuevas actualizaciones.'
                 },
                 {
-                  q: 'How do I update the app to the latest version?',
-                  a: 'Updates are automatic via your app store. You can also check manually in the settings menu under "Check for Updates".'
+                  q: '¿Qué requisitos de hardware se necesitan para un rendimiento óptimo?',
+                  a: 'Para mejores resultados, recomendamos un dispositivo con al menos 4GB de RAM, un procesador moderno y una cámara con resolución mínima de 720p.'
                 },
                 {
-                  q: 'Is there a free trial available?',
-                  a: 'Yes, we offer a 14-day free trial for new users with full access to all premium features.'
-                },
-                {
-                  q: 'How can I customize gesture controls?',
-                  a: 'Go to Settings > Gesture Controls > Customize to create your own gesture mappings and adjust sensitivity.'
-                },
-                {
-                  q: 'What hardware requirements are needed for optimal performance?',
-                  a: 'For best results, we recommend a device with at least 4GB RAM, a modern processor, and a camera with at least 720p resolution.'
-                },
-                {
-                  q: 'Is my data secure when using gesture controls?',
-                  a: 'Yes, all gesture processing happens locally on your device. We do not store or transmit your camera data to our servers.'
+                  q: '¿Mis datos están seguros al usar los controles gestuales?',
+                  a: 'Sí, todo el procesamiento de gestos ocurre localmente en tu dispositivo. No almacenamos ni transmitimos los datos de tu cámara a nuestros servidores.'
                 }
               ].map(({ q, a }, i) => (
                 <CustomAccordionItem
@@ -542,19 +569,27 @@ function EmailCopyButton({
     <CustomButton
       onClick={() => onCopy(email)}
       variant="ghost"
-      className="h-8 w-8 p-0 rounded-full"
-      aria-label="Copy email address"
+      className="h-8 w-8 p-0 rounded-full hover:bg-accent-primary/10"
+      aria-label="Copiar dirección de correo"
     >
       {success ? (
         <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
+          initial={{ scale: 0.5, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.5, opacity: 0 }}
           transition={{ type: 'spring', stiffness: 500, damping: 15 }}
         >
           <CheckCircle size={16} className="text-green-500" />
         </motion.div>
       ) : (
-        <Copy size={16} />
+        <motion.div
+          initial={{ scale: 0.5, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.5, opacity: 0 }}
+          transition={{ type: 'spring', stiffness: 500, damping: 15 }}
+        >
+          <Copy size={16} className="text-accent-primary hover:text-accent-primary/80" />
+        </motion.div>
       )}
     </CustomButton>
   )

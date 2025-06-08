@@ -15,7 +15,7 @@ export function RadialMenu() {
   // Páginas donde se debe mostrar el menú radial
   const allowedPaths = [
     '/detection-test',
-    '/detection-settings',
+    '/detection-info',
     '/interactive-space',
     '/settings',
     '/help'
@@ -62,10 +62,10 @@ export function RadialMenu() {
       {showMenu && (
         <motion.div
           className="fixed bottom-4 right-4 z-50"
-          initial={{ scale: 0, rotate: -180 }}
+          initial={{ scale: 0, rotate: -90 }}
           animate={{ scale: 1, rotate: 0 }}
-          exit={{ scale: 0, rotate: 180 }}
-          transition={{ type: 'spring', stiffness: 260, damping: 20 }}
+          exit={{ scale: 0, rotate: 90 }}
+          transition={{ type: 'spring', stiffness: 400, damping: 25 }}
         >
           <button
             onClick={() => setIsOpen((prev) => !prev)}
@@ -128,7 +128,7 @@ export function RadialMenu() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
+            transition={{ duration: 0.15 }}
             onClick={() => setIsOpen(false)}
             className="fixed inset-0 bg-background-primary/85 backdrop-blur-sm z-50"
             role="dialog"
@@ -137,12 +137,12 @@ export function RadialMenu() {
           />
 
           <motion.div
-            initial={{ scale: 0.8, opacity: 0 }}
+            initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.8, opacity: 0 }}
-            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            exit={{ scale: 0.9, opacity: 0 }}
+            transition={{ type: 'spring', damping: 20, stiffness: 400 }}
             className="
-              fixed bottom-20 left-1/2 transform -translate-x-1/2 z-50
+              fixed bottom-20 right-4 transform z-50
               py-6 px-8
               bg-gradient-to-b from-background-secondary/95 to-background-tertiary/95
               backdrop-blur-md
@@ -152,22 +152,22 @@ export function RadialMenu() {
             "
           >
             <div className="flex items-center gap-4">
-              {routes.map((route, index) => {
+              {routes.map((route, _) => {
                 const Icon = route.icon
                 const isActive = location.pathname === route.path
                 return (
                   <div key={route.path} className="relative flex flex-col items-center">
                     <motion.button
-                      initial={{ scale: 0, y: 20 }}
+                      initial={{ scale: 0, y: 5 }}
                       animate={{ scale: 1, y: 0 }}
-                      exit={{ scale: 0, y: 20 }}
+                      exit={{ scale: 0, y: 5 }}
                       transition={{
-                        delay: index * 0.03,
                         type: 'spring',
-                        stiffness: 400,
-                        damping: 20
+                        stiffness: 700,
+                        damping: 30,
+                        mass: 0.5
                       }}
-                      whileHover={{ scale: 1.1 }}
+                      whileHover={{ scale: 1.08 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => handleItemClick(route.path)}
                       onMouseEnter={() => setActiveTooltip(route.path)}
@@ -209,10 +209,10 @@ export function RadialMenu() {
 
                     {activeTooltip === route.path && (
                       <motion.div
-                        initial={{ opacity: 0, y: -4 }}
+                        initial={{ opacity: 0, y: -2 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0 }}
-                        transition={{ duration: 0.15 }}
+                        transition={{ duration: 0.1 }}
                         className="
                           absolute top-full mt-2
                           px-3 py-1.5

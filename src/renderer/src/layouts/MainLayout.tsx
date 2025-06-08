@@ -1,5 +1,5 @@
 import { Outlet } from 'react-router-dom'
-import { RadialMenu } from '../components/RadialMenu'
+import { RadialMenu } from '../components/MenuDock'
 
 export default function MainLayout() {
   return (

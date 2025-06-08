@@ -70,15 +70,15 @@ function HandTracker({ className = '' }) {
 }
 
 function StatusIndicator() {
-  const [status, setStatus] = useState('Initializing...')
+  const [status, setStatus] = useState('Iniciando...')
   const [isActive, setIsActive] = useState(false)
 
   useEffect(() => {
     const statuses = [
-      'Initializing...',
-      'Calibrating sensors...',
-      'Ready for gestures',
-      'Tracking active'
+      'Iniciando...',
+      'Calibrando sensores...',
+      'Listo para gestos',
+      'Seguimiento activo'
     ]
     let index = 0
     const interval = setInterval(() => {
@@ -107,7 +107,6 @@ function StatusIndicator() {
 }
 
 export default function LandingPage2() {
-  const [gestureCount, setGestureCount] = useState(0)
   const [isRunning, setIsRunning] = useState(false)
   const [isTesting, setIsTesting] = useState(false)
   const navigate = useNavigate()
@@ -121,11 +120,34 @@ export default function LandingPage2() {
     })
   }
 
+  useEffect(() => {
+    // Verificar el estado de la ventana de control al cargar
+    if (window?.electron?.ipcRenderer) {
+      window.electron.ipcRenderer.invoke('is-control-panel-open').then((isOpen) => {
+        setIsRunning(isOpen)
+      })
+
+      // Escuchar cambios en el estado de la ventana de control
+      const handleControlPanelStatus = (isOpen: boolean) => {
+        setIsRunning(isOpen)
+      }
+
+      const unsubscribe = window.electron.ipcRenderer.on('control-panel-status', handleControlPanelStatus)
+
+      return () => {
+        if (unsubscribe) {
+          unsubscribe()
+        }
+      }
+    }
+    return () => {} // Función de cleanup vacía para el caso donde window?.electron?.ipcRenderer es falsy
+  }, [])
+
   const handleRun = () => {
-    setIsRunning(true)
-    setGestureCount((prev) => prev + 1)
-    window.electron.ipcRenderer.send('open-control-panel')
-    setTimeout(() => setIsRunning(false), 3000)
+    if (!isRunning && window?.electron?.ipcRenderer) {
+      setIsRunning(true)
+      window.electron.ipcRenderer.send('open-control-panel')
+    }
   }
 
   const handleTest = () => {
@@ -201,19 +223,19 @@ export default function LandingPage2() {
           <motion.div custom={1} variants={fadeUpVariants} initial="hidden" animate="visible">
             <h1 className="text-4xl sm:text-6xl md:text-8xl font-black mb-6 md:mb-8 tracking-tight">
               <span className="bg-clip-text text-transparent bg-gradient-to-b from-white to-white/80">
-                Natural
+                Interacción
               </span>
               <br />
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-300 via-blue-300 to-teal-300">
-                Interaction
+                Natural
               </span>
             </h1>
           </motion.div>
 
           <motion.div custom={2} variants={fadeUpVariants} initial="hidden" animate="visible">
             <p className="text-base sm:text-lg md:text-xl text-cyan-100/60 mb-8 leading-relaxed font-light tracking-wide max-w-2xl mx-auto px-4">
-              Experience the future of human-computer interaction through real-time gesture
-              recognition. GestOS transforms natural movements into seamless digital commands.
+              Experimenta el futuro de la interacción humano-computadora a través del reconocimiento de gestos en tiempo real. 
+              GestOS transforma los movimientos naturales en comandos digitales fluidos.
             </p>
           </motion.div>
 
@@ -221,15 +243,15 @@ export default function LandingPage2() {
             <div className="flex flex-wrap justify-center gap-6 mb-12">
               <div className="flex items-center gap-2 text-cyan-200/80">
                 <Zap className="w-5 h-5 text-cyan-400" />
-                <span className="text-sm font-medium">Real-time Processing</span>
+                <span className="text-sm font-medium">Procesamiento en Tiempo Real</span>
               </div>
               <div className="flex items-center gap-2 text-cyan-200/80">
                 <Hand className="w-5 h-5 text-cyan-400" />
-                <span className="text-sm font-medium">Gesture Recognition</span>
+                <span className="text-sm font-medium">Reconocimiento de Gestos</span>
               </div>
               <div className="flex items-center gap-2 text-cyan-200/80">
                 <Eye className="w-5 h-5 text-cyan-400" />
-                <span className="text-sm font-medium">Computer Vision</span>
+                <span className="text-sm font-medium">Visión por Computadora</span>
               </div>
             </div>
           </motion.div>
@@ -253,15 +275,15 @@ export default function LandingPage2() {
         >
           {isRunning ? (
             <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+              animate={{ opacity: [0.5, 1] }}
+              transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
               className="flex items-center gap-2"
             >
-              <Cpu className="w-5 h-5" /> Running...
+              <Cpu className="w-5 h-5" /> Ejecutando...
             </motion.div>
           ) : (
             <div className="flex items-center gap-2">
-              <Zap className="w-5 h-5" /> Run
+              <Zap className="w-5 h-5" /> Iniciar
             </div>
           )}
         </button>
@@ -277,25 +299,15 @@ export default function LandingPage2() {
               transition={{ duration: 0.5, repeat: Infinity }}
               className="flex items-center gap-2"
             >
-              <Eye className="w-5 h-5" /> Testing...
+              <Eye className="w-5 h-5" /> Probando...
             </motion.div>
           ) : (
             <div className="flex items-center gap-2">
-              <Hand className="w-5 h-5" /> Test
+              <Hand className="w-5 h-5" /> Probar
             </div>
           )}
         </button>
       </motion.div>
-
-      {gestureCount > 0 && (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="absolute top-6 right-6 px-4 py-2 rounded-full bg-cyan-500/20 border border-cyan-400/30"
-        >
-          <span className="text-cyan-100 text-sm font-semibold">Gestures: {gestureCount}</span>
-        </motion.div>
-      )}
 
       <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-[#0a0a0a]/80 pointer-events-none" />
     </div>
