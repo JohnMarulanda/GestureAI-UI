@@ -11,6 +11,7 @@ export const MainHeading: React.FC<MainHeadingProps> = ({ children, className = 
   return (
     <motion.h1
       id={id}
+      data-typography="main-heading"
       className={`relative text-4xl md:text-5xl lg:text-6xl font-bold text-white ${className}`}
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -21,18 +22,22 @@ export const MainHeading: React.FC<MainHeadingProps> = ({ children, className = 
         delay: 0.1
       }}
     >
-      {/* Capa de sombra principal */}
-      <span className="absolute -left-1 -top-1 text-purple-500/20 select-none" aria-hidden="true">
-        {children}
-      </span>
+      <div className="relative inline-block">
+        {/* Capa de sombra principal */}
+        <span className="absolute -left-[4px] -top-[4px] text-purple-500/20 select-none" aria-hidden="true">
+          {children}
+        </span>
 
-      {/* Capa de sombra secundaria */}
-      <span className="absolute -left-0.5 -top-0.5 text-blue-500/30 select-none" aria-hidden="true">
-        {children}
-      </span>
+        {/* Capa de sombra secundaria */}
+        <span className="absolute -left-[2px] -top-[2px] text-blue-500/30 select-none" aria-hidden="true">
+          {children}
+        </span>
 
-      {/* Texto principal */}
-      <span className="relative">{children}</span>
+        {/* Texto principal */}
+        <span className="relative">
+          {children}
+        </span>
+      </div>
     </motion.h1>
   )
 }
@@ -53,6 +58,7 @@ export const Subtitle: React.FC<SubtitleProps> = ({
   return (
     <motion.h2
       id={id}
+      data-typography="subtitle"
       className={`text-lg md:text-xl font-medium ${secondary ? 'text-white/70' : 'text-white/90'} ${className}`}
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
@@ -117,6 +123,7 @@ export const GlowingText: React.FC<GlowingTextProps> = ({
 
   return (
     <motion.span
+      data-typography="glowing-text"
       className={`inline-block font-medium ${colorMap[color]} ${className}`}
       style={{ textShadow: `0 0 15px currentColor` }}
       initial={{ opacity: 0, scale: 0.9 }}
