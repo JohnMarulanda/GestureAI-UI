@@ -27,8 +27,8 @@ export function BackgroundLines() {
       speed: number
 
       constructor() {
-        this.x = Math.random() * canvas.width
-        this.y = Math.random() * canvas.height
+        this.x = Math.random() * canvas!.width
+        this.y = Math.random() * canvas!.height
         this.dirX = (Math.random() - 0.5) * 2
         this.dirY = (Math.random() - 0.5) * 2
         this.size = Math.random() * 1.5 + 0.5 // Slightly smaller particles
@@ -41,10 +41,10 @@ export function BackgroundLines() {
       }
 
       update() {
-        if (this.x > canvas.width || this.x < 0) {
+        if (this.x > canvas!.width || this.x < 0) {
           this.dirX = -this.dirX
         }
-        if (this.y > canvas.height || this.y < 0) {
+        if (this.y > canvas!.height || this.y < 0) {
           this.dirY = -this.dirY
         }
 
@@ -89,7 +89,7 @@ export function BackgroundLines() {
       requestAnimationFrame(animate)
       if (!ctx) return
 
-      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      ctx.clearRect(0, 0, canvas!.width, canvas!.height)
 
       for (const particle of particles) {
         particle.update()

@@ -27,6 +27,14 @@ export function GlowingText() {
       animate={{ opacity: 1 }}
       transition={{ duration: 1 }}
     >
+      <style>
+        {`
+          .letter.revealed {
+            opacity: 0.9 !important;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.4) !important;
+          }
+        `}
+      </style>
       <div className="relative flex justify-center items-center">
         {text.split('').map((char, index) => (
           <div
@@ -41,16 +49,6 @@ export function GlowingText() {
           </div>
         ))}
       </div>
-
-      {/* CSS for the reveal animation with simple glow effect */}
-      <style jsx>{`
-        .letter.revealed {
-          opacity: 0.9;
-          text-shadow:
-            0 0 10px rgba(255, 255, 255, 0.8),
-            0 0 20px rgba(255, 255, 255, 0.4);
-        }
-      `}</style>
     </motion.div>
   )
 }

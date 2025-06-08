@@ -1,15 +1,20 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import { LucideIcon } from 'lucide-react'
 
 type GestureCardProps = {
   gesture: {
     id: number
     name: string
     value: string
-    image: string
+    icon: LucideIcon
     description: string
-    settings: string[]
+    details: {
+      howTo: string
+      features: string[]
+      tips: string[]
+    }
   }
   isSelected: boolean
   onClick: () => void
@@ -23,7 +28,7 @@ export default function GestureCard({ gesture, isSelected, onClick }: GestureCar
         relative w-full
         bg-gradient-to-br from-background-secondary to-background-tertiary
         rounded-2xl
-        p-4
+        p-6
         border
         shadow-dark-lg
         transition-all duration-300
@@ -57,65 +62,23 @@ export default function GestureCard({ gesture, isSelected, onClick }: GestureCar
       />
 
       <div className="relative z-10">
-        <div
-          className="
-          aspect-square
-          rounded-xl
-          mb-3
-          overflow-hidden
-          bg-gradient-to-br from-background-hover to-background-tertiary
-          border border-border-secondary
-        "
-        >
-          <img
-            src={gesture.image}
-            alt={`${gesture.name} gesture preview`}
-            className="w-full h-full object-cover"
-            loading="lazy"
-          />
+        <div className="flex items-start gap-4 mb-4">
+          <div className="p-3 rounded-xl bg-gradient-to-br from-accent-primary/10 to-accent-muted/10 border border-accent-muted/20 group-hover:border-accent-primary/30 transition-colors">
+            <gesture.icon className="w-6 h-6 text-accent-primary" />
+          </div>
+          
+          <div className="flex-1 min-w-0">
+            <h3 className="text-foreground-primary font-medium text-base mb-1 truncate">
+              {gesture.name}
+            </h3>
+            <div className="inline-flex items-center px-3 py-1 rounded-lg bg-gradient-to-r from-accent-muted/20 to-accent-primary/20 border border-accent-muted/30 text-accent-primary text-xs font-medium">
+              {gesture.value}
+            </div>
+          </div>
         </div>
 
-        <div className="space-y-1">
-          <h3
-            className="
-            text-foreground-primary
-            font-medium
-            text-sm
-            truncate
-          "
-          >
-            {gesture.name}
-          </h3>
-
-          <div
-            className="
-            text-xs
-            text-foreground-secondary
-            line-clamp-2
-            group-hover:text-foreground-primary
-            transition-colors duration-200
-          "
-          >
-            {gesture.description}
-          </div>
-
-          <div
-            className="
-            mt-2
-            inline-flex
-            items-center
-            px-2
-            py-1
-            rounded-lg
-            bg-gradient-to-r from-accent-muted/20 to-accent-primary/20
-            border border-accent-muted/30
-            text-accent-primary
-            text-xs
-            font-medium
-          "
-          >
-            {gesture.value}
-          </div>
+        <div className="text-sm text-foreground-secondary line-clamp-3 group-hover:text-foreground-primary transition-colors duration-200">
+          {gesture.description}
         </div>
       </div>
     </motion.button>

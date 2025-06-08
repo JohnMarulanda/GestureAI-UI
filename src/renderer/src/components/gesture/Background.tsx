@@ -53,8 +53,8 @@ const Background: React.FC = () => {
       opacity: number
 
       constructor() {
-        this.x = Math.random() * canvas.width
-        this.y = Math.random() * canvas.height
+        this.x = Math.random() * canvas!.width
+        this.y = Math.random() * canvas!.height
         this.size = Math.random() * 3 + 1
         this.baseX = this.x
         this.baseY = this.y

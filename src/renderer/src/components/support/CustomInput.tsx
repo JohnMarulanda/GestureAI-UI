@@ -1,7 +1,5 @@
 import React, { forwardRef } from 'react'
-
-import { motion } from 'framer-motion'
-
+   
 interface CustomInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string
 
@@ -114,7 +112,7 @@ export const CustomInput = forwardRef<HTMLInputElement, CustomInputProps>(
             </div>
           )}
 
-          <motion.input
+          <input
             ref={ref}
             type={type}
             id={inputId}
@@ -134,9 +132,6 @@ export const CustomInput = forwardRef<HTMLInputElement, CustomInputProps>(
             aria-describedby={
               error ? `${inputId}-error` : helperText ? `${inputId}-helper` : undefined
             }
-            initial={{ opacity: 0.9 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.2 }}
             {...props}
           />
 

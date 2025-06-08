@@ -49,7 +49,7 @@ export function CustomAccordionItem({ value, children, className = '' }: Accordi
     >
       {React.Children.map(children, (child) => {
         if (React.isValidElement(child) && child.type === CustomAccordionTrigger) {
-          return React.cloneElement(child as React.ReactElement<AccordionTriggerProps>, {
+          return React.cloneElement(child as React.ReactElement<AccordionTriggerProps & { onClick?: () => void }>, {
             onClick: () => setIsOpen(!isOpen)
           })
         }

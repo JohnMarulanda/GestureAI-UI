@@ -79,6 +79,7 @@ export function Slider({
         window.removeEventListener('mouseup', handleMouseUp)
       }
     }
+    return () => {}
   }, [isDragging])
 
   return (

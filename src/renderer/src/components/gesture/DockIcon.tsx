@@ -8,6 +8,7 @@ interface DockIconProps {
   color?: string
   onClick?: () => void
   active?: boolean
+  disabled?: boolean
   className?: string
 }
 
@@ -17,6 +18,7 @@ const DockIcon: React.FC<DockIconProps> = ({
   color = 'blue',
   onClick,
   active = false,
+  disabled = false,
   className = ''
 }) => {
   // Mapeo de colores para diferentes estados
@@ -74,44 +76,75 @@ const DockIcon: React.FC<DockIconProps> = ({
   // Obtener el esquema de color seleccionado o usar el azul por defecto
   const colorScheme = colorMap[color as keyof typeof colorMap] || colorMap.blue
 
+  // Modificar estilos si está deshabilitado
+  const disabledStyles = disabled ? {
+    bg: 'bg-gray-500/10',
+    border: 'border-gray-500/20',
+    text: 'text-gray-500',
+    icon: 'text-gray-500',
+    hover: '',
+    glow: 'from-gray-500/10 to-transparent'
+  } : colorScheme
+
+  const handleClick = () => {
+    if (!disabled && onClick) {
+      onClick()
+    }
+  }
+
   return (
     <motion.div
       className={`relative ${className}`}
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
+      whileHover={disabled ? {} : { scale: 1.05 }}
+      whileTap={disabled ? {} : { scale: 0.95 }}
     >
-      {/* Efecto de brillo en hover */}
-      <div
-        className="absolute inset-0 -bottom-4 bg-gradient-to-b opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl pointer-events-none"
-        style={{
-          backgroundImage: `radial-gradient(circle at center, ${colorScheme.glow.split('-')[1].split('/')[0]}, transparent 70%)`,
-          filter: 'blur(10px)'
-        }}
-      />
+      {/* Efecto de brillo en hover - solo si no está deshabilitado */}
+      {!disabled && (
+        <div
+          className="absolute inset-0 -bottom-4 bg-gradient-to-b opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl pointer-events-none"
+          style={{
+            backgroundImage: `radial-gradient(circle at center, ${colorScheme.glow.split('-')[1].split('/')[0]}, transparent 70%)`,
+            filter: 'blur(10px)'
+          }}
+        />
+      )}
 
       {/* Contenedor principal */}
       <motion.button
-        onClick={onClick}
-        className={`group relative flex flex-col items-center justify-center w-full p-3 rounded-xl backdrop-blur-sm border transition-all duration-300 ${colorScheme.bg} ${colorScheme.border} ${colorScheme.hover}`}
-        whileHover={{ y: -2 }}
+        onClick={handleClick}
+        disabled={disabled}
+        className={`group relative flex flex-col items-center justify-center w-full p-3 rounded-xl backdrop-blur-sm border transition-all duration-300 ${disabledStyles.bg} ${disabledStyles.border} ${!disabled ? disabledStyles.hover : ''} ${disabled ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'}`}
+        whileHover={disabled ? {} : { y: -2 }}
         aria-label={name}
       >
         {/* Icono */}
-        <div className={`relative z-10 mb-1 ${colorScheme.icon}`}>
+        <div className={`relative z-10 mb-1 ${disabledStyles.icon}`}>
           <Icon size={24} strokeWidth={1.5} />
         </div>
 
         {/* Nombre */}
-        <span className={`text-xs font-medium ${colorScheme.text}`}>{name}</span>
+        <span className={`text-xs font-medium ${disabledStyles.text}`}>{name}</span>
 
         {/* Indicador de activo */}
-        {active && (
+        {active && !disabled && (
           <motion.div
             className="absolute bottom-1 w-1.5 h-1.5 rounded-full bg-current"
             initial={{ opacity: 0, scale: 0 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ type: 'spring', stiffness: 500, damping: 30 }}
           />
+        )}
+
+        {/* Indicador de deshabilitado */}
+        {disabled && (
+          <motion.div
+            className="absolute inset-0 flex items-center justify-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+          >
+            <div className="w-6 h-0.5 bg-gray-500/50 rotate-45 absolute" />
+            <div className="w-6 h-0.5 bg-gray-500/50 -rotate-45 absolute" />
+          </motion.div>
         )}
       </motion.button>
     </motion.div>

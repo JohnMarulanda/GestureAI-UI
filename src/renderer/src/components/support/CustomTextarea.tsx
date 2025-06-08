@@ -1,7 +1,5 @@
 import React, { forwardRef } from 'react'
 
-import { motion } from 'framer-motion'
-
 interface CustomTextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   label?: string
 
@@ -109,7 +107,7 @@ export const CustomTextarea = forwardRef<HTMLTextAreaElement, CustomTextareaProp
           </label>
         )}
 
-        <motion.textarea
+        <textarea
           ref={ref}
           id={textareaId}
           placeholder={placeholder}
@@ -136,9 +134,6 @@ export const CustomTextarea = forwardRef<HTMLTextAreaElement, CustomTextareaProp
                   ? `${textareaId}-count`
                   : undefined
           }
-          initial={{ opacity: 0.9 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.2 }}
           value={value}
           {...props}
         />

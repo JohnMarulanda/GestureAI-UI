@@ -108,9 +108,10 @@ const CameraInterface = forwardRef<CameraInterfaceRef, CameraInterfaceProps>(
         videoRef.current.style.filter = `brightness(${brightness}%) contrast(${contrast}%)`
       }
     }, [brightness, contrast])
+
     return (
       <motion.div
-        className="relative w-full max-w-4xl mx-auto overflow-hidden rounded-2xl shadow-xl"
+        className="relative w-full max-w-md mx-auto overflow-hidden rounded-2xl shadow-xl"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: 'easeOut' }}
