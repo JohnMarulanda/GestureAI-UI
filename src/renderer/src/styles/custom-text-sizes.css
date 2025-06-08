@@ -1,0 +1,104 @@
+/* Custom text size classes that use CSS custom properties */
+/* These classes will be used only in specific pages that support text size customization */
+
+:root {
+  --custom-text-base: 16px;
+  --custom-text-sm: 14px;
+  --custom-text-xs: 12px;
+  --custom-text-lg: 18px;
+  --custom-text-xl: 20px;
+  --custom-text-2xl: 24px;
+  --custom-text-3xl: 30px;
+}
+
+/* Custom text size classes */
+.custom-text-xs {
+  font-size: var(--custom-text-xs) !important;
+}
+
+.custom-text-sm {
+  font-size: var(--custom-text-sm) !important;
+}
+
+.custom-text-base {
+  font-size: var(--custom-text-base) !important;
+}
+
+.custom-text-lg {
+  font-size: var(--custom-text-lg) !important;
+}
+
+.custom-text-xl {
+  font-size: var(--custom-text-xl) !important;
+}
+
+.custom-text-2xl {
+  font-size: var(--custom-text-2xl) !important;
+}
+
+.custom-text-3xl {
+  font-size: var(--custom-text-3xl) !important;
+}
+
+/* Exclude Typography components from custom text sizing */
+.supports-custom-text-size [data-typography] {
+  font-size: revert !important;
+}
+
+.supports-custom-text-size [data-typography] * {
+  font-size: inherit !important;
+}
+
+/* Apply custom text sizes to common text elements (excluding Typography components) */
+.supports-custom-text-size p:not([data-typography]):not([data-typography] *) {
+  font-size: var(--custom-text-base);
+}
+
+.supports-custom-text-size .text-sm:not([data-typography]):not([data-typography] *) {
+  font-size: var(--custom-text-sm);
+}
+
+.supports-custom-text-size .text-xs:not([data-typography]):not([data-typography] *) {
+  font-size: var(--custom-text-xs);
+}
+
+.supports-custom-text-size .text-lg:not([data-typography]):not([data-typography] *) {
+  font-size: var(--custom-text-lg);
+}
+
+.supports-custom-text-size .text-xl:not([data-typography]):not([data-typography] *) {
+  font-size: var(--custom-text-xl);
+}
+
+.supports-custom-text-size .text-2xl:not([data-typography]):not([data-typography] *) {
+  font-size: var(--custom-text-2xl);
+}
+
+.supports-custom-text-size .text-3xl:not([data-typography]):not([data-typography] *) {
+  font-size: var(--custom-text-3xl);
+}
+
+/* Specific overrides for headings (excluding Typography components) */
+.supports-custom-text-size h1:not([data-typography]):not([data-typography] *) {
+  font-size: var(--custom-text-3xl);
+}
+
+.supports-custom-text-size h2:not([data-typography]):not([data-typography] *) {
+  font-size: var(--custom-text-2xl);
+}
+
+.supports-custom-text-size h3:not([data-typography]):not([data-typography] *) {
+  font-size: var(--custom-text-xl);
+}
+
+.supports-custom-text-size h4:not([data-typography]):not([data-typography] *) {
+  font-size: var(--custom-text-lg);
+}
+
+.supports-custom-text-size span:not([data-typography]):not([data-typography] *) {
+  font-size: var(--custom-text-base);
+}
+
+.supports-custom-text-size label:not([data-typography]):not([data-typography] *) {
+  font-size: var(--custom-text-base);
+} 

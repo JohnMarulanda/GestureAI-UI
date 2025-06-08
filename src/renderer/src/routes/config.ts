@@ -1,5 +1,5 @@
 import type { LucideIcon } from 'lucide-react'
-import { ArrowLeft, ArrowRight, HelpCircle, Home, Play, Settings } from 'lucide-react'
+import { ArrowLeft, ArrowRight, HelpCircle, Home, Play, Settings, Info } from 'lucide-react'
 
 export interface RouteConfig {
   icon: LucideIcon
@@ -24,9 +24,9 @@ export const routes: RouteConfig[] = [
     path: '/detection-test'
   },
   {
-    icon: Settings,
-    label: 'Configuración de Detección',
-    path: '/detection-settings'
+    icon: Info,
+    label: 'Información de Detección',
+    path: '/detection-info'
   },
   {
     icon: Settings,
