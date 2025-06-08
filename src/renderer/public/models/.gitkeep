@@ -1,0 +1,2 @@
+# Esta carpeta contiene los modelos de MediaPipe para reconocimiento de gestos
+# Los archivos .task se copian automáticamente durante el build 

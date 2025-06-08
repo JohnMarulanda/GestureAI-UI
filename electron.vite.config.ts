@@ -15,7 +15,7 @@ export default defineConfig({
     plugins: [externalizeDepsPlugin()]
   },
   renderer: {
-    assetsInclude: 'src/renderer/assets/**',
+    assetsInclude: ['**/*.task', 'src/renderer/assets/**', 'src/models/**'],
     resolve: {
       alias: {
         '@renderer': resolve('src/renderer/src'),
@@ -23,9 +23,19 @@ export default defineConfig({
         '@/hooks': resolve('src/renderer/src/hooks'),
         '@/assets': resolve('src/renderer/src/assets'),
         '@/components': resolve('src/renderer/src/components'),
-        '@/mocks': resolve('src/renderer/src/mocks')
+        '@/mocks': resolve('src/renderer/src/mocks'),
+        '@/utils': resolve('src/renderer/src/utils'),
+        '@/services': resolve('src/renderer/src/services')
       }
     },
-    plugins: [react()]
+    plugins: [react()],
+    publicDir: resolve('src/renderer/public'),
+    build: {
+      rollupOptions: {
+        input: {
+          index: resolve('src/renderer/index.html')
+        }
+      }
+    }
   }
 })
