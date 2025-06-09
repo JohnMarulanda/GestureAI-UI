@@ -1,7 +1,7 @@
 {
-  "name": "gestureai-ui",
+  "name": "gestos-ui",
   "version": "1.0.0",
-  "description": "An Electron application with React and TypeScript",
+  "description": "GestOS - Control gestual inteligente para Windows",
   "main": "./out/main/index.js",
   "author": "example.com",
   "homepage": "https://electron-vite.org",

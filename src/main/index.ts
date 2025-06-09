@@ -344,10 +344,10 @@ app.whenReady().then(() => {
     })
 
     if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
-      controlPanelWindow.loadURL(`${process.env['ELECTRON_RENDERER_URL']}/control-panel`)
+      controlPanelWindow.loadURL(`${process.env['ELECTRON_RENDERER_URL']}#/control-panel`)
     } else {
       controlPanelWindow.loadFile(join(__dirname, '../renderer/index.html'), {
-        hash: 'control-panel'
+        hash: '/control-panel'
       })
     }
 
