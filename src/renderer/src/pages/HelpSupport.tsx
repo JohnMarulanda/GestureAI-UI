@@ -455,6 +455,7 @@ export default function HelpAndSupport() {
                 icon={<ArrowRight size={16} />}
                 iconPosition="right"
                 aria-label="Ver documentación"
+                onClick={() => window.open('https://drive.google.com/drive/folders/1e8CVTxWlQRb3OcZDfa2Oqn8E9ZaC7SCT?usp=drive_link', '_blank')}
               >
                 Ver Documentación
               </CustomButton>
@@ -472,9 +473,9 @@ export default function HelpAndSupport() {
               <h3 className="text-xl font-serif">Soporte por Email</h3>
             </div>
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-4 bg-background-primary/60 p-3 rounded-lg border border-border-primary">
-              <span className="text-foreground-primary text-sm sm:text-base break-all">john.valero@correounivalle.edu.co</span>
+              <span className="text-foreground-primary text-sm sm:text-base break-all">gestos031@gmail.com</span>
               <EmailCopyButton
-                email="john.valero@correounivalle.edu.co"
+                email="gestos031@gmail.com"
                 success={copySuccess}
                 onCopy={handleCopyEmail}
               />
@@ -498,7 +499,7 @@ export default function HelpAndSupport() {
               Descubre cómo usar el controlador gestual y desbloquea todo su potencial desde la página de inicio de presentación.
             </p>
             <div className="mt-auto pt-4">
-              <CustomButton variant="secondary" aria-label="Aprende más sobre los controles gestuales">
+              <CustomButton variant="secondary" aria-label="Aprende más sobre los controles gestuales" onClick={() => window.open('https://gest-os.vercel.app/', '_blank')}>
                 Aprende Más
               </CustomButton>
             </div>

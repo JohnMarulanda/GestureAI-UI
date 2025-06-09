@@ -7,86 +7,92 @@ import { ChevronRight, Volume2, AppWindow, SquarePlay, Monitor, Command, Mouse, 
 import { useState } from 'react'
 import '../styles/custom-text-sizes.css'
 
-// Datos de los gestos con información detallada
+// Datos de los gestos con información detallada basada en el README.md
 const GESTURES_DATA = [
   [
     {
       id: 1,
-      name: 'Control de Volumen',
+      name: 'Control de Volumen 🔊',
       value: 'Gesto Básico',
       icon: Volume2,
-      description: 'Control intuitivo del volumen del sistema mediante gestos de mano.',
+      description: '🔊 Controla el volumen del sistema con gestos simples de mano.',
       details: {
-        howTo: 'Extiende tu mano con la palma abierta y muévela horizontalmente. Desliza hacia la derecha para subir el volumen y hacia la izquierda para bajarlo.',
+        howTo: '🎮 Ejecuta el controlador y utiliza gestos simples: 👍 pulgar arriba para subir volumen, 👎 pulgar abajo para bajar volumen, y ✊ puño cerrado para silenciar/desilenciar.',
         features: [
-          'Control preciso del volumen del sistema',
-          'Ajuste gradual o rápido según la velocidad del gesto',
-          'Gesto de silencio disponible con movimiento vertical'
+          '👍 Subir volumen con gesto de pulgar arriba',
+          '👎 Bajar volumen con gesto de pulgar abajo',
+          '✊ Silenciar/desilenciar con gesto de mano cerrada (delay 2s)'
         ],
         tips: [
-          'Mantén la mano estable para mayor precisión',
-          'Usa movimientos suaves para ajustes finos',
-          'La distancia óptima es entre 30-60cm de la cámara'
+          '⚡ Cada gesto de volumen arriba/abajo cambia 3 niveles de volumen',
+          '⏱️ El silenciado tiene un retraso de 2 segundos para evitar activaciones accidentales',
+          '🎵 Funciona con el volumen del sistema independientemente de la aplicación en primer plano'
         ]
       }
     },
     {
       id: 2,
-      name: 'Control de Aplicaciones',
+      name: 'Control de Aplicaciones 🖥️',
       value: 'Gesto Avanzado',
       icon: AppWindow,
-      description: 'Abre y gestiona aplicaciones con gestos naturales de la mano.',
+      description: '🖥️ Abre y cierra aplicaciones específicas con gestos de mano.',
       details: {
-        howTo: 'Realiza un movimiento circular con el dedo índice para abrir el menú de aplicaciones. Selecciona una aplicación apuntando hacia ella.',
+        howTo: '🎮 Ejecuta el controlador y utiliza gestos específicos para abrir o cerrar aplicaciones como Chrome, Bloc de notas, Calculadora y Spotify.',
         features: [
-          'Apertura rápida de aplicaciones frecuentes',
-          'Cambio entre aplicaciones abiertas',
-          'Cierre de aplicaciones con gesto de barrido'
+          '✊ Mano cerrada: Abrir/cerrar Google Chrome',
+          '👍 Pulgar arriba: Abrir/cerrar Bloc de notas',
+          '✌️ Victoria (V): Abrir/cerrar Calculadora',
+          '🤟 Te amo (🤟): Abrir/cerrar Spotify'
         ],
         tips: [
-          'Mantén un movimiento circular constante',
-          'Espera la confirmación visual antes de seleccionar',
-          'Practica el gesto de cierre para mayor precisión'
+          '📹 Mantén tu mano dentro del encuadre de la cámara',
+          '👐 Realiza gestos claros y definidos',
+          '🔄 Si una aplicación ya está abierta, el mismo gesto la cerrará',
+          '💡 Si tienes problemas para que se detecte un gesto, intenta ajustar la iluminación'
         ]
       }
     },
     {
       id: 3,
-      name: 'Control Multimedia',
+      name: 'Control Multimedia ▶️',
       value: 'Gesto Multimedia',
       icon: SquarePlay,
-      description: 'Controla la reproducción multimedia con gestos intuitivos.',
+      description: '▶️ Controla la reproducción multimedia con gestos intuitivos.',
       details: {
-        howTo: 'Usa gestos de pellizcar y expandir con el pulgar e índice para controlar la reproducción. Desliza horizontalmente para avanzar o retroceder.',
+        howTo: '🎮 Ejecuta el controlador y utiliza gestos para controlar la reproducción: adelantar, retroceder, cambiar pistas, reproducir/pausar y silenciar.',
         features: [
-          'Control de reproducción/pausa',
-          'Avance y retroceso rápido',
-          'Control de volumen integrado'
+          '👍 Pulgar arriba: Adelantar / Mantener 4s para siguiente pista ⏭️',
+          '👎 Pulgar abajo: Retroceder / Mantener 4s para pista anterior ⏮️',
+          '✊ Mano cerrada: Silenciar/desilenciar (delay 2s) 🔇',
+          '🤟 Te amo (🤟): Play/Pause (delay 2s) ⏯️'
         ],
         tips: [
-          'Mantén los dedos juntos para el gesto de pellizco',
-          'Usa movimientos fluidos para mejor respuesta',
-          'Ajusta la velocidad según la distancia del gesto'
+          '🎵 Funciona mejor con reproductores multimedia en primer plano',
+          '⏱️ Los gestos mantenidos (como pulgar arriba/abajo) mostrarán una barra de progreso',
+          '⌨️ Si usas pistas con teclas multimedia, el gesto de mantener cambiará la pista completa',
+          '⚠️ El delay en silenciar y play/pause evita activaciones accidentales'
         ]
       }
     },
     {
       id: 4,
-      name: 'Control del Sistema',
+      name: 'Control del Sistema 💻',
       value: 'Gesto Sistema',
       icon: Monitor,
-      description: 'Accede y controla funciones del sistema operativo.',
+      description: '💻 Controla funciones del sistema como apagado, reinicio y bloqueo.',
       details: {
-        howTo: 'Utiliza gestos específicos para acceder a funciones del sistema como brillo, notificaciones y configuraciones rápidas.',
+        howTo: '🎮 Ejecuta el controlador y mantén gestos específicos durante 3 segundos para activar funciones del sistema como bloquear, suspender, apagar o reiniciar.',
         features: [
-          'Acceso rápido a configuraciones',
-          'Control de brillo y pantalla',
-          'Gestión de notificaciones'
+          '✌️ Victoria (V) (mantener 3s): Bloquear PC 🔒',
+          '🖐️ Mano abierta (mantener 3s): Suspender PC 😴',
+          '✊ Puño cerrado (mantener 3s): Apagar PC 🔌',
+          '🤟 Te amo (🤟) (mantener 3s): Reiniciar PC 🔄'
         ],
         tips: [
-          'Aprende los gestos básicos primero',
-          'Mantén la mano dentro del campo de visión',
-          'Usa gestos precisos para mejor reconocimiento'
+          '✅ Este controlador incluye una confirmación adicional para evitar acciones accidentales',
+          '⚠️ Usa con precaución, especialmente las funciones de apagado y reinicio',
+          '⏱️ Debes mantener el gesto durante el tiempo indicado para que se active',
+          '📊 Se mostrará una barra de progreso mientras mantienes el gesto'
         ]
       }
     }
@@ -94,81 +100,91 @@ const GESTURES_DATA = [
   [
     {
       id: 5,
-      name: 'Atajos del Sistema',
+      name: 'Control de Atajos ⌨️',
       value: 'Gesto Atajo',
       icon: Command,
-      description: 'Activa atajos y comandos rápidos del sistema con gestos.',
+      description: '⌨️ Ejecuta atajos de teclado comunes con gestos de mano.',
       details: {
-        howTo: 'Realiza combinaciones de gestos predefinidos para activar atajos del sistema y funciones personalizadas.',
+        howTo: '🎮 Ejecuta el controlador y utiliza gestos específicos para activar atajos de teclado como copiar, pegar, deshacer, rehacer y guardar.',
         features: [
-          'Atajos personalizables',
-          'Combinaciones de gestos',
-          'Acciones rápidas del sistema'
+          '✌️ Victoria (V): Copiar (Ctrl+C) 📋',
+          '🖐️ Mano abierta: Pegar (Ctrl+V) 📄',
+          '✊ Puño cerrado: Tecla Escape ❌',
+          '👍 Pulgar arriba: Deshacer (Ctrl+Z) ↩️',
+          '👎 Pulgar abajo: Rehacer (Ctrl+Y) ↪️',
+          '🤟 Te amo (🤟): Guardar (Ctrl+S) 💾'
         ],
         tips: [
-          'Personaliza los atajos según tus necesidades',
-          'Practica las combinaciones más usadas',
-          'Mantén gestos simples para mayor eficiencia'
+          '📝 Ideal para uso en editores de texto y aplicaciones creativas',
+          '🖥️ Mantén la aplicación de destino en primer plano',
+          '⏱️ Espera al menos 0.8 segundos entre atajos para que funcionen correctamente',
+          '⚠️ Si el gesto no funciona, asegúrate de que la aplicación soporte el atajo correspondiente'
         ]
       }
     },
     {
       id: 6,
-      name: 'Control del Mouse',
+      name: 'Control del Mouse 🖱️',
       value: 'Gesto Mouse',
       icon: Mouse,
-      description: 'Controla el cursor y acciones del mouse con gestos naturales.',
+      description: '🖱️ Controla el cursor y realiza acciones de clic con gestos de mano.',
       details: {
-        howTo: 'Mueve tu mano en el aire para controlar el cursor. Realiza gestos específicos para clic, doble clic y arrastrar.',
+        howTo: '🎮 Ejecuta el controlador y utiliza la mano derecha para mover el cursor y realizar acciones como clic izquierdo, doble clic, clic derecho y arrastrar.',
         features: [
-          'Control preciso del cursor',
-          'Gestos para clic y arrastre',
-          'Scroll y zoom integrados'
+          '👌 Pulgar + Índice extendidos: Mover el cursor 🔄',
+          '☝️👍 Pulgar + Índice + Medio extendidos: Doble clic izquierdo ⏩',
+          '🖖 Pulgar + Índice + Medio + Anular extendidos: Clic derecho 📋',
+          '🖐️ Cuatro dedos sin pulgar (palma): Arrastrar elementos ✋'
         ],
         tips: [
-          'Mantén la mano estable para mejor precisión',
-          'Usa movimientos suaves para el cursor',
-          'Practica los gestos de clic y arrastre'
+          '🟣 Mantén la mano dentro del área de control (rectángulo morado)',
+          '🎯 Realiza movimientos suaves para mayor precisión',
+          '🔴 El controlador solo reconoce la mano derecha (se mostrará en rojo si usa la izquierda)',
+          '⏱️ Intenta mantener el gesto por al menos 0.5 segundos para que se active'
         ]
       }
     },
     {
       id: 7,
-      name: 'Navegación',
+      name: 'Control de Navegación 🪟',
       value: 'Gesto Navegación',
       icon: Compass,
-      description: 'Navega entre ventanas y espacios de trabajo con gestos.',
+      description: '🪟 Controla las ventanas del sistema con gestos de mano.',
       details: {
-        howTo: 'Utiliza gestos de deslizamiento y rotación para cambiar entre ventanas y espacios de trabajo.',
+        howTo: '🎮 Ejecuta el controlador y utiliza gestos específicos para controlar las ventanas: vista de tareas, minimizar, maximizar y cerrar ventanas.',
         features: [
-          'Cambio rápido entre ventanas',
-          'Gestión de espacios de trabajo',
-          'Vista de todas las ventanas'
+          '✌️ Victoria (V): Activar vista de tareas (Win+Tab) 📑',
+          '🤟 Te amo (🤟): Minimizar ventana actual (Win+Down) ⬇️',
+          '✊ Puño cerrado: Maximizar ventana actual (Win+Up) ⬆️',
+          '🖐️ Mano abierta: Cerrar ventana actual (Alt+F4) ❌'
         ],
         tips: [
-          'Usa gestos amplios para cambios rápidos',
-          'Mantén un ritmo constante en los gestos',
-          'Aprende las transiciones entre espacios'
+          '⚠️ Ten cuidado con el gesto de cerrar ventana, podría cerrar trabajos no guardados',
+          '⏱️ Cada acción tiene un retraso de 1 segundo para evitar repeticiones accidentales',
+          '👐 Realiza gestos claros y bien definidos para mayor precisión',
+          '📊 La función de vista de tareas es útil para cambiar entre aplicaciones'
         ]
       }
     },
     {
       id: 8,
-      name: 'Inicio Rápido',
-      value: 'Gesto Inicio',
+      name: 'Gestos Comunes 🔄',
+      value: 'Gesto Universal',
       icon: House,
-      description: 'Accede rápidamente a funciones principales del sistema.',
+      description: '🔄 Gestos comunes a todos los controladores para salir o cerrar.',
       details: {
-        howTo: 'Realiza un gesto de "casa" con la mano para acceder al menú de inicio y funciones principales.',
+        howTo: '🎮 Estos gestos funcionan en todos los controladores y te permiten salir o cerrar el controlador actual de forma rápida.',
         features: [
-          'Acceso al menú de inicio',
-          'Vista de aplicaciones recientes',
-          'Búsqueda rápida del sistema'
+          '☝️ Dedo índice arriba (mantener 3s): Cierra el controlador actual ❌',
+          '⌨️ Tecla ESC: Salir del controlador 🚪',
+          '🔄 Funciona en todos los modos de control',
+          '✅ Proporciona una forma consistente de salir'
         ],
         tips: [
-          'Mantén el gesto claro y definido',
-          'Espera la confirmación visual',
-          'Usa el gesto desde cualquier pantalla'
+          '⏱️ Mantén el dedo índice arriba durante al menos 3 segundos para cerrar',
+          '⚡ La tecla ESC es la forma más rápida de salir',
+          '🔄 Estos gestos son universales en todos los controladores',
+          '🔀 Útil cuando necesitas cambiar rápidamente entre controladores'
         ]
       }
     }
