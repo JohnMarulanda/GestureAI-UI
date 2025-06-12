@@ -1,15 +1,15 @@
-import { motion } from 'framer-motion';
-import * as SliderPrimitive from '@radix-ui/react-slider';
+import { motion } from 'framer-motion'
+import * as SliderPrimitive from '@radix-ui/react-slider'
 
 interface SliderProps {
-  label: string;
-  value: number[];
-  onValueChange: (value: number[]) => void;
-  min: number;
-  max: number;
-  step?: number;
-  marks?: { value: number; label: string }[];
-  disabled?: boolean;
+  label: string
+  value: number[]
+  onValueChange: (value: number[]) => void
+  min: number
+  max: number
+  step?: number
+  marks?: { value: number; label: string }[]
+  disabled?: boolean
 }
 
 export function Slider({
@@ -54,11 +54,7 @@ export function Slider({
       {marks && (
         <div className="flex justify-between px-1 mt-2">
           {marks.map((mark) => (
-            <div
-              key={mark.value}
-              className="flex flex-col items-center"
-              style={{ width: '20px' }}
-            >
+            <div key={mark.value} className="flex flex-col items-center" style={{ width: '20px' }}>
               <div className="w-0.5 h-1 bg-gray-600" />
               <span className="mt-1 text-xs text-gray-400">{mark.label}</span>
             </div>
@@ -66,5 +62,5 @@ export function Slider({
         </div>
       )}
     </div>
-  );
+  )
 }

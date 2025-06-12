@@ -1,34 +1,22 @@
-import { motion } from 'framer-motion';
-import { Switch } from '@headlessui/react';
+import { motion } from 'framer-motion'
+import { Switch } from '@headlessui/react'
 
 interface ToggleProps {
-  label: string;
-  checked: boolean;
-  onChange: (checked: boolean) => void;
-  description?: string;
-  disabled?: boolean;
+  label: string
+  checked: boolean
+  onChange: (checked: boolean) => void
+  description?: string
+  disabled?: boolean
 }
 
-export function Toggle({
-  label,
-  checked,
-  onChange,
-  description,
-  disabled = false
-}: ToggleProps) {
+export function Toggle({ label, checked, onChange, description, disabled = false }: ToggleProps) {
   return (
     <Switch.Group as="div" className="flex items-start">
       <div className="flex-grow">
-        <Switch.Label
-          as="span"
-          className="text-sm font-medium text-gray-200"
-          passive
-        >
+        <Switch.Label as="span" className="text-sm font-medium text-gray-200" passive>
           {label}
         </Switch.Label>
-        {description && (
-          <div className="mt-1 text-sm text-gray-400">{description}</div>
-        )}
+        {description && <div className="mt-1 text-sm text-gray-400">{description}</div>}
       </div>
       <Switch
         checked={checked}
@@ -57,5 +45,5 @@ export function Toggle({
         />
       </Switch>
     </Switch.Group>
-  );
+  )
 }

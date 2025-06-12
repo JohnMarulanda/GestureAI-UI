@@ -1,5 +1,5 @@
-appId: com.electron.app
-productName: gestureai-ui
+appId: com.gestos.GestOS
+productName: GestOS
 directories:
   buildResources: build
 files:
@@ -11,8 +11,15 @@ files:
   - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
 asarUnpack:
   - resources/**
+  - src/renderer/src/executables/**
+extraResources:
+  - from: src/renderer/src/executables
+    to: executables
+    filter:
+      - "**/*"
 win:
-  executableName: gestureai-ui
+  executableName: GestOS
+  icon: resources/Icono.ico
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}

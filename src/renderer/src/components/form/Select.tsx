@@ -1,27 +1,21 @@
-import { SelectHTMLAttributes, forwardRef } from 'react';
-import { motion } from 'framer-motion';
+import { SelectHTMLAttributes, forwardRef } from 'react'
+import { motion } from 'framer-motion'
 
 interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
-  label: string;
-  error?: string;
+  label: string
+  error?: string
 }
 
 export const Select = forwardRef<HTMLSelectElement, SelectProps>(
   ({ label, error, className = '', children, ...props }, ref) => {
-    const id = `select-${label.toLowerCase().replace(/\s+/g, '-')}`;
+    const id = `select-${label.toLowerCase().replace(/\s+/g, '-')}`
 
     return (
       <div className="space-y-2">
-        <label
-          htmlFor={id}
-          className="block text-sm font-medium text-gray-200"
-        >
+        <label htmlFor={id} className="block text-sm font-medium text-gray-200">
           {label}
         </label>
-        <motion.div
-          whileTap={{ scale: 0.995 }}
-          className="relative rounded-lg"
-        >
+        <motion.div whileTap={{ scale: 0.995 }} className="relative rounded-lg">
           <select
             id={id}
             ref={ref}
@@ -59,8 +53,8 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
           </p>
         )}
       </div>
-    );
+    )
   }
-);
+)
 
-Select.displayName = 'Select';
+Select.displayName = 'Select'
