@@ -13,7 +13,7 @@ import {
   Compass,
   AppWindow,
   Monitor,
-  House ,
+  House,
   X,
   SquarePlay
 } from 'lucide-react'

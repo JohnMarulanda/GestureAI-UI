@@ -182,7 +182,7 @@ export default function HelpAndSupport() {
       <main className="container mx-auto px-4 py-12 md:py-16 lg:py-20">
         {/* Sección de encabezado */}
         
-       <motion.header className="mb-4 pt-4 md:pt-8" variants={itemVariants}>
+       <motion.header className="mb-4 pt-4 md:pt-8" initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
           <div className="mb-8 float-animation text-center">
             <MainHeading>Ayuda y Soporte</MainHeading>
 

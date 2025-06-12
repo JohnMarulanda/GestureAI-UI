@@ -340,7 +340,6 @@ const GestureTesting: React.FC = () => {
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-background-primary supports-custom-text-size">
-      {/* Background con efectos visuales */}
       <Background />
 
       {/* Contenedor principal con animaciones */}
@@ -367,12 +366,11 @@ const GestureTesting: React.FC = () => {
         )}
 
         {/* Sección de encabezado */}
-        <motion.header className="mb-4 pt-4 md:pt-8" variants={itemVariants}>
-          <div className="mb-8 float-animation">
-            <MainHeading>Los gestos dan vida a las ideas.</MainHeading>
-
+        <motion.header className="mb-8 pt-4 md:pt-8" variants={itemVariants}>
+          <div className="mb-8 text-center">
+            <MainHeading>Prueba de Gestos</MainHeading>
             <Subtitle className="text-center max-w-2xl mx-auto mt-2" secondary>
-              Prueba y controla tu mundo digital con gestos y movimientos naturales de la mano.
+              Experimenta con el reconocimiento de gestos y prueba diferentes modos interactivos
             </Subtitle>
           </div>
         </motion.header>

@@ -16,7 +16,7 @@ interface SimonSaysGameProps {
 }
 
 type GameGesture = 'Puño Cerrado' | 'Palma Abierta' | 'Victoria' | 'Pulgar Arriba' | 'Pulgar Abajo'
-type GameState = 'waiting' | 'showing' | 'playing' | 'success' | 'failure'
+type GameState = 'waiting' | 'showing' | 'countdown' | 'playing' | 'success' | 'failure'
 
 interface GameStats {
   currentLevel: number
@@ -36,19 +36,23 @@ const SimonSaysGame = forwardRef<SimonSaysGameRef, SimonSaysGameProps>(
     const [showDebug, setShowDebug] = useState(false)
 
     // Estados del juego
-    const [gameState, setGameState] = useState<GameState>('waiting')
-    const [sequence, setSequence] = useState<GameGesture[]>([])
-    const [userSequence, setUserSequence] = useState<GameGesture[]>([])
-    const [currentShowingIndex, setCurrentShowingIndex] = useState(-1)
-    const [showingGesture, setShowingGesture] = useState<GameGesture | null>(null)
-    const [lastDetectedGesture, setLastDetectedGesture] = useState<GameGesture | null>(null)
-    const [stats, setStats] = useState<GameStats>({
-      currentLevel: 1,
-      bestLevel: 1,
-      totalGames: 0,
-      successStreak: 0,
-      bestStreak: 0
-    })
+  const [gameState, setGameState] = useState<GameState>('waiting')
+  const [sequence, setSequence] = useState<GameGesture[]>([])
+  const [userSequence, setUserSequence] = useState<GameGesture[]>([])
+  const [currentShowingIndex, setCurrentShowingIndex] = useState(-1)
+  const [showingGesture, setShowingGesture] = useState<GameGesture | null>(null)
+  const [lastDetectedGesture, setLastDetectedGesture] = useState<GameGesture | null>(null)
+  const [countdown, setCountdown] = useState(0)
+  const [gestureStable, setGestureStable] = useState(false)
+  const [gestureConfirmationCount, setGestureConfirmationCount] = useState(0)
+  const [canDetectGesture, setCanDetectGesture] = useState(true)
+  const [stats, setStats] = useState<GameStats>({
+    currentLevel: 1,
+    bestLevel: 1,
+    totalGames: 0,
+    successStreak: 0,
+    bestStreak: 0
+  })
 
     // Hook de reconocimiento de gestos
     const {
@@ -178,12 +182,16 @@ const SimonSaysGame = forwardRef<SimonSaysGameRef, SimonSaysGameProps>(
         }
         
         // PASO 4: Resetear estados del juego
-        setGameState('waiting')
-        setSequence([])
-        setUserSequence([])
-        setCurrentShowingIndex(-1)
-        setShowingGesture(null)
-        setLastDetectedGesture(null)
+  setGameState('waiting')
+  setSequence([])
+  setUserSequence([])
+  setCurrentShowingIndex(-1)
+  setShowingGesture(null)
+  setLastDetectedGesture(null)
+  setCountdown(0)
+  setGestureStable(false)
+  setGestureConfirmationCount(0)
+  setCanDetectGesture(true)
         
         // PASO 5: Actualizar estados de cámara
         setIsStreaming(false)
@@ -269,96 +277,145 @@ const SimonSaysGame = forwardRef<SimonSaysGameRef, SimonSaysGameProps>(
     }, [gameGestures])
 
     // Iniciar nuevo juego
-    const startGame = useCallback(() => {
-      const newSequence = generateSequence(stats.currentLevel)
-      setSequence(newSequence)
-      setUserSequence([])
-      setCurrentShowingIndex(-1)
-      setShowingGesture(null)
-      setLastDetectedGesture(null)
-      setGameState('showing')
-      
-      console.log('🧠 Nueva secuencia generada:', newSequence)
-    }, [generateSequence, stats.currentLevel])
+  const startGame = useCallback(() => {
+    const newSequence = generateSequence(stats.currentLevel)
+    setSequence(newSequence)
+    setUserSequence([])
+    setCurrentShowingIndex(-1)
+    setShowingGesture(null)
+    setLastDetectedGesture(null)
+    setCountdown(0)
+    setGestureStable(false)
+    setGestureConfirmationCount(0)
+    setCanDetectGesture(false)
+    setGameState('showing')
+    
+    console.log('🧠 Nueva secuencia generada:', newSequence)
+  }, [generateSequence, stats.currentLevel])
 
     // Mostrar secuencia al usuario
-    useEffect(() => {
-      if (gameState === 'showing' && sequence.length > 0) {
-        let index = 0
-        setCurrentShowingIndex(0)
-        
-        const showNext = () => {
-          if (index < sequence.length) {
-            setShowingGesture(sequence[index])
-            setCurrentShowingIndex(index)
-            
+  useEffect(() => {
+    if (gameState === 'showing' && sequence.length > 0) {
+      let index = 0
+      setCurrentShowingIndex(0)
+      
+      const showNext = () => {
+        if (index < sequence.length) {
+          setShowingGesture(sequence[index])
+          setCurrentShowingIndex(index)
+          
+          setTimeout(() => {
+            setShowingGesture(null)
             setTimeout(() => {
-              setShowingGesture(null)
-              setTimeout(() => {
-                index++
-                if (index < sequence.length) {
-                  showNext()
-                } else {
-                  // Terminó de mostrar la secuencia
-                  setCurrentShowingIndex(-1)
-                  setGameState('playing')
-                  console.log('🎯 Secuencia mostrada, esperando input del usuario')
-                }
-              }, 300) // Pausa entre gestos
-            }, 1000) // Duración de cada gesto
-          }
+              index++
+              if (index < sequence.length) {
+                showNext()
+              } else {
+                // Terminó de mostrar la secuencia - iniciar cuenta regresiva
+                setCurrentShowingIndex(-1)
+                setGameState('countdown')
+                
+                // Cuenta regresiva de 3 segundos
+                let countdownValue = 3
+                setCountdown(countdownValue)
+                
+                const countdownInterval = setInterval(() => {
+                  countdownValue--
+                  setCountdown(countdownValue)
+                  
+                  if (countdownValue <= 0) {
+                    clearInterval(countdownInterval)
+                    setGameState('playing')
+                    setCanDetectGesture(true)
+                    setGestureStable(false)
+                    setGestureConfirmationCount(0)
+                  }
+                }, 1000)
+              }
+            }, 500) // Pausa más larga entre gestos
+          }, 1500) // Duración más larga de cada gesto
         }
-        
-        // Esperar un poco antes de empezar
-        setTimeout(showNext, 800)
       }
-    }, [gameState, sequence])
+      
+      // Esperar un poco antes de empezar
+      setTimeout(showNext, 1000)
+    }
+  }, [gameState, sequence])
 
-    // Detectar gestos del usuario durante el juego
-    useEffect(() => {
-      if (gameState === 'playing' && currentGesture && gameGestures.includes(currentGesture.gesture as GameGesture)) {
-        const detectedGesture = currentGesture.gesture as GameGesture
-        
-        // Evitar detectar el mismo gesto múltiples veces
+    // Sistema mejorado de detección de gestos con estabilidad
+  useEffect(() => {
+    if (gameState === 'playing' && currentGesture && gameGestures.includes(currentGesture.gesture as GameGesture) && canDetectGesture) {
+      const detectedGesture = currentGesture.gesture as GameGesture
+      const confidence = currentGesture.confidence
+      
+      // Requerir confianza mínima pero no tan alta
+      if (confidence >= 75) {
+        // Sistema simplificado: solo requiere que sea diferente al último gesto detectado
         if (detectedGesture !== lastDetectedGesture) {
           setLastDetectedGesture(detectedGesture)
-          console.log('🧠 Gesto detectado en Simon Says:', detectedGesture)
+          setGestureConfirmationCount(1)
+          setGestureStable(false)
           
-          const newUserSequence = [...userSequence, detectedGesture]
-          setUserSequence(newUserSequence)
-          
-          // Verificar si el gesto es correcto
-          const currentIndex = newUserSequence.length - 1
-          if (sequence[currentIndex] === detectedGesture) {
-            // Gesto correcto
-            if (newUserSequence.length === sequence.length) {
-              // ¡Secuencia completa y correcta!
-              setGameState('success')
-              setTimeout(() => {
-                // Avanzar al siguiente nivel
+          // Breve delay para mostrar el gesto detectado
+          setTimeout(() => {
+            setGestureStable(true)
+            
+            // Procesar el gesto después de un delay más corto
+            setTimeout(() => {
+              // Gesto confirmado - procesar inmediatamente
+              const newUserSequence = [...userSequence, detectedGesture]
+              setUserSequence(newUserSequence)
+              
+              // Verificar si el gesto es correcto
+              const currentIndex = newUserSequence.length - 1
+              if (sequence[currentIndex] === detectedGesture) {
+                // Gesto correcto
+                if (newUserSequence.length === sequence.length) {
+                  // ¡Secuencia completa y correcta!
+                  setGameState('success')
+                  setTimeout(() => {
+                    // Avanzar al siguiente nivel
+                    setStats(prev => ({
+                      ...prev,
+                      currentLevel: prev.currentLevel + 1,
+                      bestLevel: Math.max(prev.bestLevel, prev.currentLevel + 1),
+                      successStreak: prev.successStreak + 1,
+                      bestStreak: Math.max(prev.bestStreak, prev.successStreak + 1)
+                    }))
+                    startGame() // Nuevo nivel automáticamente
+                  }, 2500)
+                } else {
+                  // Cooldown más corto entre gestos correctos
+                  setCanDetectGesture(false)
+                  setTimeout(() => {
+                    setCanDetectGesture(true)
+                    setGestureStable(false)
+                    setGestureConfirmationCount(0)
+                    setLastDetectedGesture(null)
+                  }, 800) // Reducido de 1500ms a 800ms
+                }
+              } else {
+                // Gesto incorrecto - Game Over
+                setGameState('failure')
                 setStats(prev => ({
                   ...prev,
-                  currentLevel: prev.currentLevel + 1,
-                  bestLevel: Math.max(prev.bestLevel, prev.currentLevel + 1),
-                  successStreak: prev.successStreak + 1,
-                  bestStreak: Math.max(prev.bestStreak, prev.successStreak + 1)
+                  totalGames: prev.totalGames + 1,
+                  successStreak: 0,
+                  currentLevel: 1 // Reiniciar nivel
                 }))
-                startGame() // Nuevo nivel automáticamente
-              }, 2000)
-            }
-          } else {
-            // Gesto incorrecto - Game Over
-            setGameState('failure')
-            setStats(prev => ({
-              ...prev,
-              totalGames: prev.totalGames + 1,
-              successStreak: 0,
-              currentLevel: 1 // Reiniciar nivel
-            }))
-          }
+              }
+            }, 300) // Reducido de 500ms a 300ms
+          }, 200) // Reducido para mostrar feedback más rápido
         }
       }
-    }, [gameState, currentGesture, userSequence, sequence, lastDetectedGesture, gameGestures, startGame])
+    } else if (gameState !== 'playing') {
+      // Limpiar estado cuando no está jugando
+      setLastDetectedGesture(null)
+      setGestureConfirmationCount(0)
+      setGestureStable(false)
+      setCanDetectGesture(false)
+    }
+  }, [gameState, currentGesture, userSequence, sequence, lastDetectedGesture, gameGestures, startGame, gestureConfirmationCount, gestureStable, canDetectGesture])
 
     // Reiniciar estadísticas
     const resetStats = useCallback(() => {
@@ -373,13 +430,17 @@ const SimonSaysGame = forwardRef<SimonSaysGameRef, SimonSaysGameProps>(
     }, [])
 
     // Reiniciar juego
-    const resetGame = useCallback(() => {
-      setStats(prev => ({ ...prev, currentLevel: 1 }))
-      setGameState('waiting')
-      setSequence([])
-      setUserSequence([])
-      setLastDetectedGesture(null)
-    }, [])
+  const resetGame = useCallback(() => {
+    setStats(prev => ({ ...prev, currentLevel: 1 }))
+    setGameState('waiting')
+    setSequence([])
+    setUserSequence([])
+    setLastDetectedGesture(null)
+    setCountdown(0)
+    setGestureStable(false)
+    setGestureConfirmationCount(0)
+    setCanDetectGesture(true)
+  }, [])
 
     // Inicializar la referencia
     useImperativeHandle(ref, () => ({
@@ -565,6 +626,33 @@ const SimonSaysGame = forwardRef<SimonSaysGameRef, SimonSaysGameProps>(
                   </motion.div>
                 )}
 
+                {gameState === 'countdown' && (
+                  <motion.div
+                    key="countdown"
+                    className="text-center bg-black/70 backdrop-blur-md rounded-xl p-6"
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                  >
+                    <motion.div
+                      className="text-8xl font-bold text-white mb-4"
+                      animate={{
+                        scale: [1, 1.2, 1],
+                        color: countdown <= 1 ? '#ef4444' : countdown === 2 ? '#f59e0b' : '#10b981'
+                      }}
+                      transition={{ duration: 0.5 }}
+                    >
+                      {countdown}
+                    </motion.div>
+                    <p className="text-white/80 text-lg font-semibold mb-2">
+                      {countdown > 0 ? "¡Prepárate!" : "¡Comienza!"}
+                    </p>
+                    <p className="text-white/60 text-sm">
+                      Mantén cada gesto hasta que se confirme
+                    </p>
+                  </motion.div>
+                )}
+
                 {gameState === 'playing' && (
                   <motion.div
                     key="playing"
@@ -578,6 +666,37 @@ const SimonSaysGame = forwardRef<SimonSaysGameRef, SimonSaysGameProps>(
                     <p className="text-white/70 text-sm mb-4">
                       Repite la secuencia ({userSequence.length}/{sequence.length})
                     </p>
+                    
+                    {!canDetectGesture && (
+                      <div className="mb-4 px-3 py-2 bg-yellow-500/20 rounded-lg">
+                        <p className="text-yellow-400 text-sm font-medium">
+                          Procesando...
+                        </p>
+                      </div>
+                    )}
+                    
+                    {/* Indicador de estabilidad del gesto */}
+                    {canDetectGesture && lastDetectedGesture && (
+                      <div className="mb-4">
+                        <motion.div
+                          className="inline-flex items-center gap-2 px-3 py-2 bg-blue-500/20 rounded-lg"
+                          animate={{
+                            scale: gestureStable ? [1, 1.1, 1] : 1,
+                            backgroundColor: gestureStable ? 'rgba(34, 197, 94, 0.3)' : 'rgba(59, 130, 246, 0.2)'
+                          }}
+                          transition={{ duration: 0.3 }}
+                        >
+                          <span className="text-2xl">{gestureInfo[lastDetectedGesture].emoji}</span>
+                          <span className="text-white font-medium">{gestureInfo[lastDetectedGesture].name}</span>
+                          {gestureStable && (
+                            <span className="text-green-400 text-lg font-bold">✓</span>
+                          )}
+                        </motion.div>
+                        <p className="text-white/60 text-xs mt-1">
+                          {gestureStable ? "Gesto confirmado" : "Detectando gesto..."}
+                        </p>
+                      </div>
+                    )}
                     
                     {/* Progreso de la secuencia */}
                     <div className="flex justify-center items-center gap-2 mb-4">
@@ -777,4 +896,4 @@ const SimonSaysGame = forwardRef<SimonSaysGameRef, SimonSaysGameProps>(
 
 SimonSaysGame.displayName = 'SimonSaysGame'
 
-export default SimonSaysGame 
+export default SimonSaysGame

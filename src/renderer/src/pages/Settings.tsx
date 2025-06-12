@@ -125,7 +125,7 @@ export default function SettingsInterface() {
     <div className="relative min-h-screen supports-custom-text-size">
       <Background />
       <div className="relative z-10 mx-auto max-w-6xl px-4 py-8">
-        <motion.header className="mb-4 pt-4 md:pt-8">
+        <motion.header className="mb-4 pt-4 md:pt-8" initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
           <div className="mb-8 text-center">
             <MainHeading>Configuración General</MainHeading>
             <Subtitle className="text-center max-w-2xl mx-auto mt-2" secondary>

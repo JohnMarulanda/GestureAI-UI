@@ -7,7 +7,6 @@ import { ChevronRight, Volume2, AppWindow, SquarePlay, Monitor, Command, Mouse, 
 import { useState } from 'react'
 import '../styles/custom-text-sizes.css'
 
-// Datos de los gestos con información detallada basada en el README.md
 const GESTURES_DATA = [
   [
     {
